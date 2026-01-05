@@ -1,1177 +1,843 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IA de Cores + Banco de Padrões (UI) + Ranking</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Caminho 6-em-6 + Padrões por Forma (A/V/E) — educacional</title>
   <style>
     :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 16px; background: #0b0f14; color: #e8eef6; }
-    .wrap { max-width: 1180px; margin: 0 auto; }
-    .card {
-      background: #111826; border: 1px solid #1c2a3b; border-radius: 14px;
-      padding: 14px; margin: 12px 0; box-shadow: 0 6px 20px rgba(0,0,0,.25);
-    }
-    h1 { font-size: 18px; margin: 0 0 6px; }
-    h2 { font-size: 14px; margin: 0 0 10px; color: #b9c7d9; font-weight: 650; }
-    .muted { color: #9fb0c6; font-size: 12px; }
+    body { margin: 16px; background:#0b0f14; color:#e8eef6; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    .card { background:#111826; border:1px solid #1c2a3b; border-radius:14px; padding:14px; margin:12px 0; box-shadow:0 6px 20px rgba(0,0,0,.25); }
+    h1 { font-size: 18px; margin:0 0 6px; }
+    h2 { font-size: 14px; margin:0 0 10px; color:#b9c7d9; font-weight:800; }
+    .muted { color:#9fb0c6; font-size:12px; }
     .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .tabs { display:flex; gap:10px; flex-wrap:wrap; }
+    .tabs { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .tabbtn {
-      border: 1px solid #2a3f58; background: #162235; color: #e8eef6;
-      padding: 10px 12px; border-radius: 12px; font-weight: 750; cursor: pointer;
+      border:1px solid #2a3f58; background:#162235; color:#e8eef6;
+      padding:10px 12px; border-radius:12px; font-weight:800; cursor:pointer;
     }
-    .tabbtn.active { border-color: #8ab4ff; box-shadow: 0 0 0 2px rgba(138,180,255,.15) inset; }
-
-    button {
-      border: 1px solid #2a3f58; background: #162235; color: #e8eef6;
-      padding: 12px 14px; border-radius: 12px; font-weight: 800; cursor: pointer;
-    }
-    button:hover { filter: brightness(1.08); }
-    button:active { transform: translateY(1px); }
-    .smallbtn { padding: 10px 12px; font-weight: 800; }
+    .tabbtn.active { border-color:#8ab4ff; box-shadow:0 0 0 2px rgba(138,180,255,.15) inset; }
+    button { border:1px solid #2a3f58; background:#162235; color:#e8eef6; padding:12px 14px; border-radius:12px; font-weight:900; cursor:pointer; }
+    button:hover { filter:brightness(1.08); }
+    .smallbtn { padding:10px 12px; }
     .danger { border-color:#ff3b3b !important; }
     .ok { border-color:#2bd46a !important; }
-    .ghost { background: #0f1725; }
-
-    .btnA { border-color: #2b6fff; }
-    .btnV { border-color: #ff3b3b; }
-    .btnE { border-color: #ffd000; }
-
-    .pill {
-      display:inline-block; padding: 3px 8px; border-radius:999px;
-      border: 1px solid #2a3f58; background:#0f1725; font-size:12px; color:#cfe0f5;
-    }
-    .sep { height: 1px; background: #1c2a3b; margin: 12px 0; }
-
-    .kpi { display:grid; grid-template-columns:1fr; gap:10px; }
-    @media (min-width: 860px){ .kpi { grid-template-columns: 1fr 1fr; } }
+    .btnA { border-color:#2b6fff; }
+    .btnV { border-color:#ff3b3b; }
+    .btnE { border-color:#ffd000; }
+    .pill { display:inline-block; padding:3px 8px; border-radius:999px; border:1px solid #2a3f58; background:#0f1725; font-size:12px; color:#cfe0f5; }
+    .sep { height:1px; background:#1c2a3b; margin:12px 0; }
+    .grid2 { display:grid; grid-template-columns:1fr; gap:10px; }
+    @media (min-width: 920px){ .grid2 { grid-template-columns: 1.2fr .8fr; } }
 
     .box { background:#0f1725; border:1px solid #1c2a3b; border-radius:12px; padding:10px; }
-    .warnBox { border-color:#ffd000 !important; box-shadow: 0 0 0 2px rgba(255,208,0,.12) inset; }
-    .goodBox { border-color:#2bd46a !important; box-shadow: 0 0 0 2px rgba(43,212,106,.10) inset; }
+    .warn { border-color:#ffd000 !important; box-shadow:0 0 0 2px rgba(255,208,0,.12) inset; }
+    .good { border-color:#2bd46a !important; box-shadow:0 0 0 2px rgba(43,212,106,.10) inset; }
     .hidden { display:none; }
-
-    .big { font-size: 16px; font-weight: 900; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-
     input[type="number"], input[type="text"], select {
-      padding: 10px; border-radius: 10px;
-      background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b;
+      padding:10px; border-radius:10px; background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b;
     }
-    input[type="number"]{ width: 100px; }
-    input[type="text"]{ min-width: 220px; flex: 1; }
-    select { min-width: 160px; }
-
-    textarea {
-      width: 100%; min-height: 92px; resize: vertical;
-      background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b; border-radius: 12px;
-      padding: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
+    input[type="number"]{ width: 110px; }
+    input[type="text"]{ min-width: 240px; flex: 1; }
+    textarea{
+      width:100%; min-height: 84px; resize: vertical;
+      background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b; border-radius:12px;
+      padding:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
     }
 
-    .rankList { margin: 8px 0 0; padding: 0; list-style: none; }
-    .rankList li { padding: 8px; border: 1px solid #1c2a3b; border-radius: 10px; margin: 8px 0; background:#0b1320; }
-    .rankTop { display:flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    /* Caminho 6-em-6 */
+    .roadWrap{ overflow:auto; border-radius:12px; border:1px solid #1c2a3b; }
+    .road{
+      display:grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 26px;
+      grid-template-rows: repeat(6, 26px);
+      gap: 3px;
+      padding: 10px;
+      background:#0b1320;
+      min-height: 210px;
+    }
+    .cell{
+      width:26px; height:26px; border-radius:999px;
+      border:1px solid #1c2a3b; background:#0f1725;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:900; color:#cfe0f5;
+      user-select:none;
+    }
+    .A{ background:#113a7a; border-color:#2b6fff; }
+    .V{ background:#7a1111; border-color:#ff3b3b; }
+    .E{ background:#6a5a12; border-color:#ffd000; }
 
-    table { width:100%; border-collapse: collapse; overflow:hidden; border-radius:12px; }
-    th, td { border-bottom: 1px solid #1c2a3b; padding: 10px; text-align:left; font-size: 12px; }
-    th { color:#b9c7d9; font-weight: 800; background:#0f1725; position: sticky; top:0; }
-    tr:hover td { background: rgba(138,180,255,.06); }
-    .right { text-align:right; }
+    /* Editor de padrão (mini-grid W x 6) */
+    .miniWrap{ overflow:auto; border-radius:12px; border:1px solid #1c2a3b; }
+    .miniGrid{
+      display:grid;
+      grid-template-rows: repeat(6, 30px);
+      gap: 4px;
+      padding: 10px;
+      background:#0b1320;
+    }
+    .miniCell{
+      width:30px; height:30px; border-radius:10px;
+      border:1px solid #1c2a3b; background:#0f1725;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:900; color:#cfe0f5;
+      cursor:pointer;
+    }
+    .tagNone{ opacity:.55; }
+    .tag1{ border-color:#8ab4ff; box-shadow:0 0 0 2px rgba(138,180,255,.15) inset; }
+    .tag2{ border-color:#ff8a8a; box-shadow:0 0 0 2px rgba(255,138,138,.12) inset; }
+    .tag3{ border-color:#ffd000; box-shadow:0 0 0 2px rgba(255,208,0,.12) inset; }
+    .tagA{ border-color:#2b6fff; }
+    .tagV{ border-color:#ff3b3b; }
+    .tagE{ border-color:#ffd000; }
 
-    .grid2 { display:grid; grid-template-columns:1fr; gap:10px; }
-    @media (min-width: 860px){ .grid2 { grid-template-columns: 1fr 1fr; } }
-
-    .note { padding: 10px; border-radius: 12px; background: #0b1320; border: 1px solid #1c2a3b; }
+    table{ width:100%; border-collapse:collapse; }
+    th,td{ border-bottom:1px solid #1c2a3b; padding:10px; text-align:left; font-size:12px; }
+    th{ background:#0f1725; position:sticky; top:0; color:#b9c7d9; font-weight:900; }
+    .right{ text-align:right; }
   </style>
 </head>
-
 <body>
 <div class="wrap">
-
   <div class="card">
-    <h1>IA de Cores + Banco de Padrões (UI) + Ranking (uso educacional)</h1>
+    <h1>Caminho 6-em-6 + Padrões por Forma (A/V/E) — educacional</h1>
     <div class="muted">
-      Padrões são cadastrados por você e ficam salvos localmente no navegador.
-      Ranking/alertas só aparecem quando o padrão tiver pelo menos <b><span id="minTrigShow">2</span></b> triggers.
+      Sequenciamento do caminho: preenche <b>6 linhas por coluna</b> (em ordem temporal). Se mudar de cor, <b>continua na mesma coluna</b> até completar 6. Empate (E) entra como cor normal.
     </div>
     <div class="sep"></div>
     <div class="tabs">
-      <button class="tabbtn active" id="tabPrev">Previsão</button>
-      <button class="tabbtn" id="tabAcomp">Acompanhamento</button>
+      <button class="tabbtn active" id="tabAnalise">Análise</button>
       <button class="tabbtn" id="tabPadroes">Padrões</button>
-      <span class="pill" id="savePill">Dados locais: ok</span>
+      <button class="tabbtn" id="tabRel">Acompanhamento</button>
+      <span class="pill" id="pillSave">Dados locais: ok</span>
     </div>
   </div>
 
-  <!-- ==================== ABA PREVISÃO ==================== -->
-  <div id="viewPrev">
+  <!-- ===================== ANÁLISE ===================== -->
+  <div id="viewAnalise">
     <div class="card">
       <h2>Registrar resultado</h2>
       <div class="row">
         <button class="btnA" id="btnA">Azul (A)</button>
         <button class="btnV" id="btnV">Vermelho (V)</button>
         <button class="btnE" id="btnE">Empate (E)</button>
-        <span class="pill" id="statusPill">Aguardando dados…</span>
-      </div>
-
-      <div class="sep"></div>
-
-      <div class="kpi">
-        <div class="box">
-          <div class="muted">Contexto (últimas <span id="nShow">5</span> cores)</div>
-          <div class="big mono" id="ctxText">—</div>
-          <div class="muted">Este contexto (N) já apareceu: <b><span id="ctxSeen">0</span>x</b></div>
-        </div>
-
-        <div class="box">
-          <div class="muted">Previsão do modelo (n-gram)</div>
-          <div class="big" id="predText">—</div>
-          <div class="muted" id="probaText">A: — | V: — | E: —</div>
-        </div>
-
-        <div class="box warnBox hidden" id="patternBox">
-          <div class="muted">Padrões detectados (ranking)</div>
-          <div class="big" id="patternTitle">—</div>
-          <div class="muted" id="patternMsg">—</div>
-          <div class="sep"></div>
-          <div class="muted">Top 5 — triggers ≥ <span id="minTrigShow2">2</span></div>
-          <ul class="rankList" id="rankList"></ul>
-        </div>
-
-        <div class="box goodBox">
-          <div class="muted">Controles</div>
-
-          <div class="row">
-            <label class="muted">N:</label>
-            <input type="number" id="nInput" min="1" max="30" value="5" />
-            <button class="smallbtn ok" id="applyN">Aplicar N</button>
-            <span class="muted">Padrões aceitam tamanho 1..N</span>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Mín. triggers:</label>
-            <input type="number" id="minTrigInput" min="1" max="999" value="2" />
-            <button class="smallbtn ok" id="applyMinTrig">Aplicar</button>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <button class="smallbtn" id="undoBtn">Desfazer último</button>
-            <button class="smallbtn" id="exportBtn">Exportar CSV</button>
-            <button class="smallbtn danger" id="resetBtn">Reset (zera tudo)</button>
-          </div>
-
-          <div class="muted" style="margin-top:10px;">
-            Dica: com poucos dados, N=3–5 costuma funcionar melhor.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Histórico</h2>
-      <div class="muted">Sequência registrada (A/V/E):</div>
-      <textarea id="historyBox" readonly></textarea>
-      <div class="muted" id="countText">Total: 0</div>
-    </div>
-
-    <div class="card">
-      <h2>Importar sequência</h2>
-      <div class="muted">
-        Cole: <code>V,V,A,E,V</code> ou <code>V V A E V</code> ou em linhas.
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <textarea id="importBox" placeholder="Cole aqui..."></textarea>
-      </div>
-      <div class="row" style="margin-top:10px;">
-        <button class="smallbtn ok" id="importBtn">Importar e Treinar</button>
-        <button class="smallbtn" id="clearImportBtn">Limpar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== ABA ACOMPANHAMENTO ==================== -->
-  <div id="viewAcomp" class="hidden">
-    <div class="card">
-      <h2>Acompanhamento — assertividade dos padrões</h2>
-      <div class="muted">
-        “Triggers” = quantas vezes o padrão foi detectado em um contexto completo (N) com próximo resultado disponível.
-        “Acertos/Taxa” só para padrões com <span class="mono">expected</span>.
-      </div>
-
-      <div class="sep"></div>
-
-      <div class="kpi">
-        <div class="box">
-          <div class="muted">Resumo</div>
-          <div class="big" id="summaryText">—</div>
-          <div class="muted" id="summaryText2">—</div>
-        </div>
-
-        <div class="box">
-          <div class="muted">Notas</div>
-          <div class="muted">
-            Padrões com poucos triggers oscilam mais. O filtro de mínimo de triggers evita alertas cedo demais.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Tabela de padrões</h2>
-      <div style="max-height: 520px; overflow:auto; border-radius: 12px; border: 1px solid #1c2a3b;">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Pattern</th>
-              <th>Posição</th>
-              <th>Expected</th>
-              <th class="right">Triggers</th>
-              <th class="right">Acertos</th>
-              <th class="right">Taxa</th>
-              <th class="right">Prob. média</th>
-              <th>Último trigger (índice)</th>
-            </tr>
-          </thead>
-          <tbody id="patternsTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Relatório rápido</h2>
-      <textarea id="reportBox" readonly></textarea>
-    </div>
-  </div>
-
-  <!-- ==================== ABA PADRÕES (UI) ==================== -->
-  <div id="viewPadroes" class="hidden">
-    <div class="card">
-      <h2>Criar / salvar padrão</h2>
-
-      <div class="note muted">
-        <b>Como escrever o pattern:</b> use tokens separados por espaço (ou vírgula).
-        Tokens permitidos: <span class="mono">A</span>, <span class="mono">V</span>, <span class="mono">E</span> e <span class="mono">*</span>.
-        Ex.: <span class="mono">V V</span>, <span class="mono">A,V,A</span>, <span class="mono">*</span>, <span class="mono">V * V</span>.
-        Tamanho do pattern: <b>1 até N</b>.
+        <span class="pill" id="statusPill">Aguardando…</span>
       </div>
 
       <div class="sep"></div>
 
       <div class="grid2">
         <div class="box">
-          <div class="muted">Dados do padrão</div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Nome:</label>
-            <input type="text" id="pName" placeholder="Ex.: Final VV" />
+          <div class="muted">Caminho (6 linhas) — col = ⌊i/6⌋, row = i%6</div>
+          <div class="roadWrap" style="margin-top:10px;">
+            <div class="road" id="road"></div>
           </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Pattern:</label>
-            <input type="text" id="pPattern" class="mono" placeholder="Ex.: V V *" />
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Posição:</label>
-            <select id="pPos">
-              <option value="end">end (no final do contexto)</option>
-              <option value="any">any (em qualquer lugar do contexto)</option>
-            </select>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Expected:</label>
-            <select id="pExp">
-              <option value="">(nenhum)</option>
-              <option value="A">Azul (A)</option>
-              <option value="V">Vermelho (V)</option>
-              <option value="E">Empate (E)</option>
-            </select>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">minProb (0..1):</label>
-            <input type="number" id="pMinProb" min="0" max="1" step="0.01" value="0.00" />
-            <span class="muted">(só aplica se houver expected)</span>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <label class="muted">Mensagem:</label>
-            <input type="text" id="pMsg" placeholder="Texto curto para aparecer no alerta" />
-          </div>
-
-          <div class="row" style="margin-top:12px;">
-            <button class="smallbtn ok" id="savePatternBtn">Salvar padrão</button>
-            <button class="smallbtn ghost" id="clearPatternFormBtn">Limpar</button>
-            <span class="pill" id="patternFormPill">—</span>
-          </div>
-
           <div class="muted" style="margin-top:10px;">
-            <b>Edição:</b> selecione um padrão na lista abaixo e clique em “Editar”. Depois, ajuste e clique em “Salvar padrão”.
+            Sequência: <span class="mono" id="seqText">—</span> | Total: <b id="seqCount">0</b>
           </div>
         </div>
 
+        <div class="box warn" id="alertBox" style="display:none;">
+          <div class="muted">Padrão por forma detectado (educacional)</div>
+          <div style="font-weight:900; font-size:16px;" id="alertTitle">—</div>
+          <div class="muted" id="alertMsg">—</div>
+          <div class="sep"></div>
+          <div class="muted">Top 5 padrões ativos (mín. ocorrências: <b><span id="minOccShow">2</span></b>)</div>
+          <div id="rankBox"></div>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="row">
+        <label class="muted">Mín. ocorrências p/ aparecer:</label>
+        <input type="number" id="minOccInput" min="1" max="999" value="2"/>
+        <label class="muted">Detectar no:</label>
+        <select id="scopeSel">
+          <option value="last">Somente no final (janela terminando no último bloco)</option>
+          <option value="any">Em qualquer posição do caminho</option>
+        </select>
+        <button class="smallbtn ok" id="applyCfg">Aplicar</button>
+
+        <button class="smallbtn" id="undoBtn">Desfazer</button>
+        <button class="smallbtn" id="exportBtn">Exportar CSV</button>
+        <button class="smallbtn danger" id="resetBtn">Reset (zera sequência)</button>
+      </div>
+
+      <div class="muted" style="margin-top:10px;">
+        Observação: o sistema registra quando a forma aparece e mostra o que ocorreu depois <b>no seu próprio histórico</b> (estatística descritiva).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Importar sequência</h2>
+      <div class="muted">Cole A/V/E (separado por espaço, vírgula ou linhas).</div>
+      <textarea id="importBox" placeholder="Ex.: V,V,A,E,V ..."></textarea>
+      <div class="row" style="margin-top:10px;">
+        <button class="smallbtn ok" id="importBtn">Importar</button>
+        <button class="smallbtn" id="clearImportBtn">Limpar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PADRÕES ===================== -->
+  <div id="viewPadroes" class="hidden">
+    <div class="card">
+      <h2>Editor de padrão por forma (janela W colunas × 6 linhas)</h2>
+      <div class="muted">
+        Clique nas células para marcar o que importa no padrão. Você pode marcar:
+        <b>1, 2, 3</b> = “grupos” (mesmo número = mesma cor) ou <b>A/V/E</b> = cor fixa.
+        Célula vazia = ignorar.
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="row">
+        <label class="muted">Largura W (colunas):</label>
+        <input type="number" id="wInput" min="1" max="12" value="2"/>
+        <label class="muted">Modo de clique:</label>
+        <select id="clickMode">
+          <option value="">(apagar)</option>
+          <option value="1">Grupo 1</option>
+          <option value="2">Grupo 2</option>
+          <option value="3">Grupo 3</option>
+          <option value="A">Cor fixa A</option>
+          <option value="V">Cor fixa V</option>
+          <option value="E">Cor fixa E</option>
+        </select>
+        <label class="muted">Exigir grupos diferentes:</label>
+        <select id="enforceDiff">
+          <option value="yes">Sim (1,2,3 devem ser cores diferentes)</option>
+          <option value="no">Não (só garante igualdade dentro do grupo)</option>
+        </select>
+        <button class="smallbtn ok" id="buildMiniBtn">Aplicar W</button>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="grid2">
         <div class="box">
-          <div class="muted">Configuração / manutenção</div>
-
-          <div class="row" style="margin-top:10px;">
-            <button class="smallbtn" id="exportPatternsBtn">Exportar padrões (JSON)</button>
-            <button class="smallbtn" id="importPatternsBtn">Importar padrões (JSON)</button>
-            <button class="smallbtn danger" id="resetPatternsBtn">Resetar padrões (padrão)</button>
+          <div class="muted">Desenhe aqui (W×6)</div>
+          <div class="miniWrap" style="margin-top:10px;">
+            <div class="miniGrid" id="miniGrid"></div>
           </div>
-
           <div class="muted" style="margin-top:10px;">
-            Importação substitui o banco atual (com validação). Exportação gera um JSON para backup.
+            Dica: “2×2” = use W=2 e marque 4 células com grupos (ex.: 1 e 2) conforme a forma.
+          </div>
+        </div>
+
+        <div class="box good">
+          <div class="muted">Salvar padrão</div>
+          <div class="row" style="margin-top:10px;">
+            <input type="text" id="patName" placeholder="Nome do padrão (ex.: Escadinha)"/>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="smallbtn ok" id="savePatBtn">Salvar</button>
+            <button class="smallbtn" id="clearMiniBtn">Limpar desenho</button>
+            <span class="pill" id="patPill">—</span>
           </div>
 
           <div class="sep"></div>
-
-          <div class="muted">Cole JSON aqui para importar:</div>
-          <textarea id="patternsJsonBox" placeholder='[{"id":"p1","nome":"...","pattern":["V","V"],"position":"end"}]'></textarea>
+          <div class="muted">
+            Exportar/importar padrões (JSON) para backup.
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="smallbtn" id="exportPatternsBtn">Exportar JSON</button>
+            <button class="smallbtn" id="importPatternsBtn">Importar JSON</button>
+            <button class="smallbtn danger" id="resetPatternsBtn">Resetar padrões</button>
+          </div>
+          <textarea id="patternsJsonBox" placeholder='Cole JSON aqui para importar'></textarea>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Banco de padrões (salvos)</h2>
-      <div class="muted">
-        Total: <b><span id="patternsCount">0</span></b> padrões.
-      </div>
+      <h2>Banco de padrões</h2>
+      <div class="muted">Os padrões abaixo serão detectados na sequência do caminho (6-em-6).</div>
       <div class="sep"></div>
-
-      <div style="max-height: 520px; overflow:auto; border-radius: 12px; border: 1px solid #1c2a3b;">
+      <div style="max-height: 520px; overflow:auto; border-radius:12px; border:1px solid #1c2a3b;">
         <table>
           <thead>
             <tr>
               <th>Nome</th>
-              <th>Pattern</th>
-              <th>Posição</th>
-              <th>Expected</th>
-              <th class="right">minProb</th>
-              <th>Ações</th>
+              <th>W</th>
+              <th>Regras</th>
+              <th class="right">Ocorrências</th>
+              <th class="right">Depois (mais comum)</th>
+              <th class="right">Ações</th>
             </tr>
           </thead>
-          <tbody id="patternsBankBody"></tbody>
+          <tbody id="patTable"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="muted">Armazenamento: tudo fica salvo localmente no navegador (localStorage).</div>
+  <!-- ===================== RELATÓRIO ===================== -->
+  <div id="viewRel" class="hidden">
+    <div class="card">
+      <h2>Acompanhamento</h2>
+      <div class="muted">
+        Para cada padrão: quantas vezes apareceu e o que ocorreu depois no seu histórico (A/V/E).
+        “Depois” = primeiro item da coluna seguinte ao final da janela (índice = (startCol+W)*6).
+      </div>
+      <div class="sep"></div>
+      <textarea id="reportBox" readonly></textarea>
+    </div>
   </div>
-
 </div>
 
 <script>
 (() => {
-  // ==================== CONFIG ====================
-  const STORAGE_KEY = "IA_CORES_PADROES_UI_V1";
+  const KEY = "CAMINHO_6_EM_6_PADROES_V1";
   const CORES = ["A","V","E"];
-  let alpha = 1.0;
-  let N = 5;
-  let MIN_TRIGGERS = 2;
 
-  // Modelo n-gram: counts[contextKey] = {A,V,E}
-  let counts = {};
+  // Config
+  let MIN_OCC = 2;
+  let SCOPE = "last"; // last | any
+
+  // Estado
   let seq = [];
+  let patterns = []; // {id,nome,W,mask,enforceDifferent}
+  let stats = {};    // id -> {occ, nextCounts{A,V,E}}
 
-  // Banco de padrões (UI)
-  let PADROES = [];
-  // Stats por padrão: stats[id] = { triggers, correct, sumProb, probCount, lastTriggerIndex }
-  let patternStats = {};
+  // Editor (mini-grid)
+  let W = 2;
+  let miniMask = []; // length W*6, values: "", "1","2","3","A","V","E"
+  let enforceDifferent = true;
 
-  // estado edição
-  let editingId = null;
+  const $ = (id) => document.getElementById(id);
 
-  // ==================== DEFAULT PATTERNS ====================
-  function defaultPatterns() {
-    return [
-      { id: "p1", nome: "Termina com V V", pattern: ["V","V"], position: "end", expected: "V", minProb: 0.55, mensagem: "Final VV detectado." },
-      { id: "p2", nome: "Termina com V V V", pattern: ["V","V","V"], position: "end", expected: "V", minProb: 0.60, mensagem: "Final VVV detectado." },
-      { id: "p3", nome: "E aparece em qualquer lugar", pattern: ["E"], position: "any", expected: null, minProb: 0.00, mensagem: "E no contexto." },
-      { id: "p4", nome: "Final A V A", pattern: ["A","V","A"], position: "end", expected: null, minProb: 0.00, mensagem: "Final AVA detectado." }
-    ];
+  function uid(){ return "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7); }
+
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({
+      MIN_OCC, SCOPE, seq, patterns,
+      editor: { W, miniMask, enforceDifferent }
+    }));
   }
 
-  // ==================== HELPERS ====================
-  function escapeHtml(s) {
-    return String(s)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  function load(){
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      if (typeof data.MIN_OCC === "number") MIN_OCC = Math.max(1, Math.floor(data.MIN_OCC));
+      if (data.SCOPE === "any" || data.SCOPE === "last") SCOPE = data.SCOPE;
+      if (Array.isArray(data.seq)) seq = data.seq.filter(x => CORES.includes(x));
+      if (Array.isArray(data.patterns)) patterns = normalizePatterns(data.patterns);
+      if (data.editor && typeof data.editor.W === "number") W = clampInt(data.editor.W, 1, 12);
+      if (data.editor && Array.isArray(data.editor.miniMask)) miniMask = normalizeMask(data.editor.miniMask, W);
+      if (data.editor && typeof data.editor.enforceDifferent === "boolean") enforceDifferent = data.editor.enforceDifferent;
+    } catch {}
   }
 
-  function label(c) {
-    if (c === "A") return "Azul (A)";
-    if (c === "V") return "Vermelho (V)";
-    return "Empate (E)";
-  }
-  function formatPct(x) { return (x * 100).toFixed(1) + "%"; }
-  function patternToString(patArr) { return patArr.join(" "); }
+  function clampInt(n, a, b){ n = Math.floor(Number(n)); if (!Number.isFinite(n)) return a; return Math.max(a, Math.min(b, n)); }
 
-  function ctxKey(ctxArr) { return ctxArr.join(","); }
-
-  function updateCounts(ctxArr, nxt) {
-    const key = ctxKey(ctxArr);
-    if (!counts[key]) counts[key] = {A:0, V:0, E:0};
-    counts[key][nxt] = (counts[key][nxt] || 0) + 1;
-  }
-
-  function predictProba(ctxArr) {
-    const key = ctxKey(ctxArr);
-    const c = counts[key] || {A:0, V:0, E:0};
-    const total = (c.A||0) + (c.V||0) + (c.E||0);
-    const denom = total + alpha * CORES.length;
-    const probs = {
-      A: ((c.A||0) + alpha) / denom,
-      V: ((c.V||0) + alpha) / denom,
-      E: ((c.E||0) + alpha) / denom,
-    };
-    return { probs, total };
-  }
-
-  function bestColor(probs) {
-    let best = "A";
-    let bestVal = -1;
-    for (const k of CORES) {
-      if (probs[k] > bestVal) { bestVal = probs[k]; best = k; }
-    }
-    return best;
-  }
-
-  // pattern matching variável:
-  // position "end": alinha pattern ao final do contexto N
-  // position "any": procura dentro do contexto N
-  function matchPatternVar(ctxArrN, patternArr, position) {
-    const k = patternArr.length;
-    if (k < 1 || k > ctxArrN.length) return false;
-
-    const checkAt = (startIdx) => {
-      for (let i = 0; i < k; i++) {
-        const p = patternArr[i];
-        if (p === "*") continue;
-        if (p !== ctxArrN[startIdx + i]) return false;
-      }
-      return true;
-    };
-
-    if (position === "any") {
-      for (let s = 0; s <= ctxArrN.length - k; s++) {
-        if (checkAt(s)) return true;
-      }
-      return false;
-    }
-    // default/end
-    const start = ctxArrN.length - k;
-    return checkAt(start);
-  }
-
-  function normalizePatterns(rawPatterns) {
+  function normalizeMask(arr, w){
+    const allowed = new Set(["","1","2","3","A","V","E"]);
     const out = [];
-    const seenIds = new Set();
-
-    for (let i=0; i<rawPatterns.length; i++) {
-      const p = rawPatterns[i];
-      if (!p || typeof p !== "object") continue;
-
-      const id = String(p.id || `p_${i+1}`).trim();
-      if (!id || seenIds.has(id)) continue;
-      seenIds.add(id);
-
-      const nome = String(p.nome || id).trim();
-
-      const pattern = Array.isArray(p.pattern)
-        ? p.pattern.map(x => String(x).toUpperCase().trim())
-        : null;
-      if (!pattern || pattern.length < 1 || pattern.length > N) continue;
-
-      // valida tokens
-      let ok = true;
-      for (const t of pattern) {
-        if (!(t === "*" || CORES.includes(t))) { ok = false; break; }
-      }
-      if (!ok) continue;
-
-      const positionRaw = String(p.position || "end").toLowerCase().trim();
-      const position = (positionRaw === "any") ? "any" : "end";
-
-      const expected = p.expected == null ? null : String(p.expected).toUpperCase().trim();
-      const expectedNorm = (expected && CORES.includes(expected)) ? expected : null;
-
-      const minProb = (typeof p.minProb === "number" && isFinite(p.minProb)) ? p.minProb : 0.0;
-      const mensagem = String(p.mensagem || "").trim();
-
-      out.push({ id, nome, pattern, position, expected: expectedNorm, minProb, mensagem });
+    for (let i=0;i<w*6;i++){
+      const v = (arr[i] ?? "");
+      const s = String(v).toUpperCase().trim();
+      out.push(allowed.has(s) ? s : "");
     }
     return out;
   }
 
-  function initPatternStats() {
-    patternStats = {};
-    for (const p of PADROES) {
-      patternStats[p.id] = { triggers:0, correct:0, sumProb:0, probCount:0, lastTriggerIndex:null };
+  function normalizePatterns(arr){
+    const out = [];
+    const seen = new Set();
+    for (const p of arr){
+      if (!p) continue;
+      const id = String(p.id||"").trim() || uid();
+      if (seen.has(id)) continue;
+      const nome = String(p.nome||id).trim();
+      const Wp = clampInt(p.W, 1, 12);
+      const mask = normalizeMask(Array.isArray(p.mask)?p.mask:[], Wp);
+      const enforce = !!p.enforceDifferent;
+      // precisa ter ao menos 1 célula marcada
+      if (!mask.some(x => x !== "")) continue;
+      out.push({id, nome, W:Wp, mask, enforceDifferent:enforce});
+      seen.add(id);
+    }
+    return out;
+  }
+
+  // ===== Caminho 6-em-6: col=floor(i/6), row=i%6 =====
+  function getCellColor(col, row){
+    const idx = col*6 + row;
+    if (idx < 0 || idx >= seq.length) return null;
+    return seq[idx];
+  }
+
+  function buildRoadCells(){
+    const cells = [];
+    for (let i=0;i<seq.length;i++){
+      const cor = seq[i];
+      const col = Math.floor(i/6);
+      const row = i % 6;
+      cells.push({col,row,cor});
+    }
+    const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
+    return {cells, maxCol};
+  }
+
+  function renderRoad(){
+    const road = $("road");
+    road.innerHTML = "";
+    const {cells, maxCol} = buildRoadCells();
+    const colsToRender = Math.max(14, maxCol+1);
+    const map = new Map();
+    for (const c of cells) map.set(`${c.col},${c.row}`, c.cor);
+
+    for (let col=0; col<colsToRender; col++){
+      for (let row=0; row<6; row++){
+        const cor = map.get(`${col},${row}`) || "";
+        const div = document.createElement("div");
+        div.className = "cell " + (cor ? cor : "");
+        div.textContent = cor ? cor : "";
+        road.appendChild(div);
+      }
     }
   }
 
-  // Detecta padrões no contexto atual (filtra por MIN_TRIGGERS e minProb quando expected)
-  function detectPatternsNow(ctxArrN, probs) {
-    const hits = [];
-    const best = bestColor(probs);
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
 
-    for (const p of PADROES) {
-      if (!matchPatternVar(ctxArrN, p.pattern, p.position)) continue;
+  // ===== Matching por máscara (forma) =====
+  // mask values:
+  // "" ignore
+  // "A","V","E" fixed color
+  // "1","2","3" groups (mesmo grupo = mesma cor)
+  function matchPatternAtStartCol(pat, startCol){
+    const Wp = pat.W;
+    const groups = {}; // "1"->color, etc.
+    const seenGroupColors = new Set();
 
-      if (p.expected && typeof p.minProb === "number") {
-        const pe = probs[p.expected] ?? 0;
-        if (pe < p.minProb) continue;
+    // coletar grupos usados
+    const usedGroups = new Set();
+    for (const v of pat.mask) if (v === "1" || v === "2" || v === "3") usedGroups.add(v);
+
+    for (let dx=0; dx<Wp; dx++){
+      for (let row=0; row<6; row++){
+        const v = pat.mask[dx*6 + row] || "";
+        if (!v) continue;
+
+        const col = startCol + dx;
+        const cor = getCellColor(col, row);
+        if (!cor) return false; // célula marcada precisa existir no histórico
+
+        if (v === "A" || v === "V" || v === "E") {
+          if (cor !== v) return false;
+          continue;
+        }
+
+        if (v === "1" || v === "2" || v === "3") {
+          if (!groups[v]) {
+            groups[v] = cor;
+            seenGroupColors.add(cor);
+          } else {
+            if (groups[v] !== cor) return false;
+          }
+        }
       }
-
-      const st = patternStats[p.id] || {triggers:0,correct:0,sumProb:0,probCount:0,lastTriggerIndex:null};
-      if (st.triggers < MIN_TRIGGERS) continue;
-
-      const scoreProb = p.expected ? (probs[p.expected] ?? 0) : (probs[best] ?? 0);
-      hits.push({ p, st, scoreProb });
     }
 
-    hits.sort((a,b) => {
-      const ae = a.p.expected ? 1 : 0;
-      const be = b.p.expected ? 1 : 0;
-      if (be !== ae) return be - ae;
-      if (b.scoreProb !== a.scoreProb) return b.scoreProb - a.scoreProb;
-      if (b.st.triggers !== a.st.triggers) return b.st.triggers - a.st.triggers;
-      return b.p.pattern.length - a.p.pattern.length;
-    });
+    if (pat.enforceDifferent && usedGroups.size > 1) {
+      // grupos diferentes precisam ser cores diferentes
+      // ex.: se 1=V e 2=V => falha
+      const vals = [];
+      for (const g of usedGroups) if (groups[g]) vals.push(groups[g]);
+      const uniq = new Set(vals);
+      if (uniq.size !== vals.length) return false;
+    }
+    return true;
+  }
 
+  // “Depois” = primeiro item da coluna seguinte ao fim da janela: idxNext = (startCol+W)*6
+  function nextAfterWindow(startCol, Wp){
+    const idx = (startCol + Wp) * 6;
+    return (idx >= 0 && idx < seq.length) ? seq[idx] : null;
+  }
+
+  function rebuildStats(){
+    stats = {};
+    for (const p of patterns) stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}};
+
+    const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
+    if (maxCol < 0) return;
+
+    for (const p of patterns){
+      const Wp = p.W;
+      for (let start=0; start<=maxCol; start++){
+        // janela precisa caber
+        if (start + Wp - 1 > maxCol) break;
+
+        if (!matchPatternAtStartCol(p, start)) continue;
+
+        const st = stats[p.id];
+        st.occ += 1;
+
+        const nxt = nextAfterWindow(start, Wp);
+        if (nxt) st.nextCounts[nxt] = (st.nextCounts[nxt]||0) + 1;
+      }
+    }
+  }
+
+  function mostCommonNext(nextCounts){
+    let best = null, bestV = -1;
+    for (const c of CORES){
+      const v = nextCounts[c] || 0;
+      if (v > bestV) { bestV = v; best = c; }
+    }
+    return bestV <= 0 ? "—" : best;
+  }
+
+  // Detectar “ativo agora”
+  function activeMatches(){
+    const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
+    const hits = [];
+    if (maxCol < 0) return hits;
+
+    for (const p of patterns){
+      const Wp = p.W;
+      if (SCOPE === "last") {
+        const start = maxCol - Wp + 1;
+        if (start < 0) continue;
+        if (matchPatternAtStartCol(p, start)) {
+          const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+          if (st.occ >= MIN_OCC) hits.push({p, st, start});
+        }
+      } else {
+        // any
+        for (let start=0; start<=maxCol; start++){
+          if (start + Wp - 1 > maxCol) break;
+          if (matchPatternAtStartCol(p, start)) {
+            const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+            if (st.occ >= MIN_OCC) hits.push({p, st, start});
+          }
+        }
+      }
+    }
+
+    // ranking: mais ocorrências primeiro
+    hits.sort((a,b) => (b.st.occ - a.st.occ));
     return hits;
   }
 
-  // Reconstrói counts e stats a partir do histórico (para desfazer/importar/editar padrões)
-  function rebuildAll() {
-    counts = {};
-    initPatternStats();
+  function renderAlert(){
+    $("minOccShow").textContent = String(MIN_OCC);
 
-    for (let i = 0; i < seq.length; i++) {
-      const atual = seq[i];
+    const alertBox = $("alertBox");
+    const hits = activeMatches();
 
-      if (i >= N) {
-        const ctxN = seq.slice(i - N, i);
-        const { probs } = predictProba(ctxN);
-
-        // atualiza stats de padrões (sem filtro MIN_TRIGGERS)
-        for (const p of PADROES) {
-          if (!matchPatternVar(ctxN, p.pattern, p.position)) continue;
-
-          const st = patternStats[p.id] || (patternStats[p.id] = {triggers:0,correct:0,sumProb:0,probCount:0,lastTriggerIndex:null});
-          st.triggers += 1;
-          st.lastTriggerIndex = i + 1;
-
-          if (p.expected) {
-            const pe = probs[p.expected] ?? 0;
-            st.sumProb += pe;
-            st.probCount += 1;
-            if (atual === p.expected) st.correct += 1;
-          }
-        }
-
-        // aprende no modelo
-        updateCounts(ctxN, atual);
-      }
-    }
-  }
-
-  // ==================== STORAGE ====================
-  function save() {
-    const payload = {
-      N, alpha, MIN_TRIGGERS,
-      seq,
-      PADROES
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  }
-
-  function load() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    try {
-      const payload = JSON.parse(raw);
-      if (payload && typeof payload.N === "number" && Array.isArray(payload.seq)) {
-        N = payload.N;
-        alpha = typeof payload.alpha === "number" ? payload.alpha : 1.0;
-        MIN_TRIGGERS = typeof payload.MIN_TRIGGERS === "number" ? payload.MIN_TRIGGERS : 2;
-        seq = payload.seq.map(x => String(x).toUpperCase()).filter(x => CORES.includes(x));
-
-        const loadedPatterns = Array.isArray(payload.PADROES) ? normalizePatterns(payload.PADROES) : [];
-        PADROES = loadedPatterns.length ? loadedPatterns : defaultPatterns();
-      }
-    } catch (_) {}
-  }
-
-  // ==================== UI refs ====================
-  const minTrigShow = document.getElementById("minTrigShow");
-  const minTrigShow2 = document.getElementById("minTrigShow2");
-
-  const tabPrev = document.getElementById("tabPrev");
-  const tabAcomp = document.getElementById("tabAcomp");
-  const tabPadroes = document.getElementById("tabPadroes");
-
-  const viewPrev = document.getElementById("viewPrev");
-  const viewAcomp = document.getElementById("viewAcomp");
-  const viewPadroes = document.getElementById("viewPadroes");
-
-  const savePill = document.getElementById("savePill");
-
-  const btnA = document.getElementById("btnA");
-  const btnV = document.getElementById("btnV");
-  const btnE = document.getElementById("btnE");
-
-  const statusPill = document.getElementById("statusPill");
-  const ctxText = document.getElementById("ctxText");
-  const ctxSeen = document.getElementById("ctxSeen");
-  const predText = document.getElementById("predText");
-  const probaText = document.getElementById("probaText");
-
-  const nShow = document.getElementById("nShow");
-  const nInput = document.getElementById("nInput");
-  const applyN = document.getElementById("applyN");
-
-  const minTrigInput = document.getElementById("minTrigInput");
-  const applyMinTrig = document.getElementById("applyMinTrig");
-
-  const undoBtn = document.getElementById("undoBtn");
-  const exportBtn = document.getElementById("exportBtn");
-  const resetBtn = document.getElementById("resetBtn");
-
-  const historyBox = document.getElementById("historyBox");
-  const countText = document.getElementById("countText");
-
-  const patternBox = document.getElementById("patternBox");
-  const patternTitle = document.getElementById("patternTitle");
-  const patternMsg = document.getElementById("patternMsg");
-  const rankList = document.getElementById("rankList");
-
-  const importBox = document.getElementById("importBox");
-  const importBtn = document.getElementById("importBtn");
-  const clearImportBtn = document.getElementById("clearImportBtn");
-
-  const patternsTableBody = document.getElementById("patternsTableBody");
-  const summaryText = document.getElementById("summaryText");
-  const summaryText2 = document.getElementById("summaryText2");
-  const reportBox = document.getElementById("reportBox");
-
-  // Padrões UI
-  const pName = document.getElementById("pName");
-  const pPattern = document.getElementById("pPattern");
-  const pPos = document.getElementById("pPos");
-  const pExp = document.getElementById("pExp");
-  const pMinProb = document.getElementById("pMinProb");
-  const pMsg = document.getElementById("pMsg");
-  const savePatternBtn = document.getElementById("savePatternBtn");
-  const clearPatternFormBtn = document.getElementById("clearPatternFormBtn");
-  const patternFormPill = document.getElementById("patternFormPill");
-
-  const exportPatternsBtn = document.getElementById("exportPatternsBtn");
-  const importPatternsBtn = document.getElementById("importPatternsBtn");
-  const resetPatternsBtn = document.getElementById("resetPatternsBtn");
-  const patternsJsonBox = document.getElementById("patternsJsonBox");
-
-  const patternsCount = document.getElementById("patternsCount");
-  const patternsBankBody = document.getElementById("patternsBankBody");
-
-  // ==================== Tabs ====================
-  function setActiveTab(which) {
-    const all = [tabPrev, tabAcomp, tabPadroes];
-    all.forEach(b => b.classList.remove("active"));
-    viewPrev.classList.add("hidden");
-    viewAcomp.classList.add("hidden");
-    viewPadroes.classList.add("hidden");
-
-    if (which === "prev") {
-      tabPrev.classList.add("active");
-      viewPrev.classList.remove("hidden");
-      updatePrevUI();
-    } else if (which === "acomp") {
-      tabAcomp.classList.add("active");
-      viewAcomp.classList.remove("hidden");
-      updateAcompanhamentoUI();
-    } else {
-      tabPadroes.classList.add("active");
-      viewPadroes.classList.remove("hidden");
-      updatePatternsUI();
-    }
-  }
-
-  tabPrev.addEventListener("click", () => setActiveTab("prev"));
-  tabAcomp.addEventListener("click", () => setActiveTab("acomp"));
-  tabPadroes.addEventListener("click", () => setActiveTab("padroes"));
-
-  // ==================== Prev UI ====================
-  function updatePrevUI() {
-    minTrigShow.textContent = String(MIN_TRIGGERS);
-    minTrigShow2.textContent = String(MIN_TRIGGERS);
-
-    nShow.textContent = String(N);
-    nInput.value = String(N);
-    minTrigInput.value = String(MIN_TRIGGERS);
-
-    historyBox.value = seq.join(" ");
-    countText.textContent = `Total: ${seq.length}`;
-
-    if (seq.length < N) {
-      statusPill.textContent = `Preciso de mais ${N - seq.length} resultado(s) para começar a prever`;
-      ctxText.textContent = "—";
-      ctxSeen.textContent = "0";
-      predText.textContent = "—";
-      probaText.textContent = "A: — | V: — | E: —";
-      patternBox.classList.add("hidden");
+    if (!hits.length) {
+      alertBox.style.display = "none";
+      $("statusPill").textContent = seq.length ? "Sem padrão ativo (com mínimo de ocorrências)" : "Aguardando…";
       return;
     }
 
-    const ctxN = seq.slice(seq.length - N);
-    ctxText.textContent = ctxN.join(" ");
-
-    const { probs, total } = predictProba(ctxN);
-    ctxSeen.textContent = String(total);
-
-    const best = bestColor(probs);
-    predText.textContent = `${label(best)}`;
-    probaText.textContent = `A: ${formatPct(probs.A)} | V: ${formatPct(probs.V)} | E: ${formatPct(probs.E)}`;
-
-    statusPill.textContent = total === 0
-      ? "Contexto novo (poucos exemplos)"
-      : (total < 5 ? "Poucos exemplos desse contexto" : "Contexto mais estável");
-
-    const hits = detectPatternsNow(ctxN, probs);
-    if (hits.length === 0) {
-      patternBox.classList.add("hidden");
-      return;
-    }
-
-    patternBox.classList.remove("hidden");
-
-    // top 1
+    alertBox.style.display = "block";
     const top = hits[0];
-    const p = top.p;
-    const st = top.st;
+    const mc = mostCommonNext(top.st.nextCounts);
 
-    const taxa = (p.expected && st.triggers > 0) ? (st.correct / st.triggers) : null;
+    $("alertTitle").textContent = top.p.nome;
+    $("alertMsg").textContent =
+      `Janela W=${top.p.W} encontrada na posição startCol=${top.start}. ` +
+      `Ocorrências no histórico: ${top.st.occ}. ` +
+      `Depois (mais comum no seu histórico): ${mc}.`;
 
-    patternTitle.textContent = p.nome;
-    if (p.expected) {
-      patternMsg.textContent =
-        `${p.mensagem ? p.mensagem + " " : ""}` +
-        `Pattern: ${patternToString(p.pattern)} (${p.position}). ` +
-        `Expected: ${label(p.expected)}. ` +
-        `Prob. agora: ${formatPct(probs[p.expected] ?? 0)}. ` +
-        `Triggers: ${st.triggers}. ` +
-        `Taxa histórica: ${(taxa*100).toFixed(1)}%.`;
-    } else {
-      patternMsg.textContent =
-        `${p.mensagem ? p.mensagem + " " : ""}` +
-        `Pattern: ${patternToString(p.pattern)} (${p.position}). ` +
-        `Sem expected fixo. Mais provável agora: ${label(best)} (${formatPct(probs[best] ?? 0)}). ` +
-        `Triggers: ${st.triggers}.`;
-    }
-
-    // ranking top 5
-    rankList.innerHTML = "";
-    hits.slice(0,5).forEach(item => {
-      const pp = item.p;
-      const ss = item.st;
-      const score = item.scoreProb;
-      const taxa2 = (pp.expected && ss.triggers > 0) ? (ss.correct / ss.triggers) : null;
-
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <div class="rankTop">
-          <div><b>${escapeHtml(pp.nome)}</b>
-            <span class="pill mono">${escapeHtml(patternToString(pp.pattern))}</span>
-            <span class="pill">${escapeHtml(pp.position)}</span>
-          </div>
-          <div class="pill">score: ${formatPct(score)}</div>
-        </div>
-        <div class="muted">
-          triggers: <b>${ss.triggers}</b>
-          ${pp.expected ? ` | expected: <b>${escapeHtml(label(pp.expected))}</b> | taxa: <b>${(taxa2*100).toFixed(1)}%</b>` : ""}
-        </div>
-      `;
-      rankList.appendChild(li);
+    const rank = $("rankBox");
+    rank.innerHTML = "";
+    hits.slice(0,5).forEach((h, i) => {
+      const mc2 = mostCommonNext(h.st.nextCounts);
+      const div = document.createElement("div");
+      div.style.marginTop = "8px";
+      div.className = "pill";
+      div.innerHTML = `${i+1}. <span class="mono">${escapeHtml(h.p.nome)}</span> | W=${h.p.W} | occ=${h.st.occ} | depois≈${mc2}`;
+      rank.appendChild(div);
     });
+
+    $("statusPill").textContent = "Padrão ativo detectado (educacional)";
   }
 
-  // ==================== Acomp UI ====================
-  function updateAcompanhamentoUI() {
-    patternsTableBody.innerHTML = "";
-
-    let totalTriggers = 0;
-    let totalEvaluated = 0;
-    let totalCorrect = 0;
-
-    const lines = [];
-    lines.push(`N=${N} | MIN_TRIGGERS=${MIN_TRIGGERS} | Total resultados: ${seq.length}`);
-    lines.push(`Total padrões: ${PADROES.length}`);
-    lines.push(`--------------------------------------------------`);
-
-    for (const p of PADROES) {
-      const st = patternStats[p.id] || {triggers:0,correct:0,sumProb:0,probCount:0,lastTriggerIndex:null};
-      totalTriggers += st.triggers;
-
-      const avaliavel = !!p.expected;
-      if (avaliavel) {
-        totalEvaluated += st.triggers;
-        totalCorrect += st.correct;
-      }
-
-      const taxa = (avaliavel && st.triggers > 0) ? (st.correct / st.triggers) : null;
-      const probMedia = (avaliavel && st.probCount > 0) ? (st.sumProb / st.probCount) : null;
-
+  function renderPatternsTable(){
+    const tbody = $("patTable");
+    tbody.innerHTML = "";
+    for (const p of patterns){
+      const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+      const mc = mostCommonNext(st.nextCounts);
+      const rules = `W=${p.W} | ${p.enforceDifferent ? "grupos diferentes" : "grupos livres"}`;
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(p.nome)}</td>
-        <td><span class="pill mono">${escapeHtml(patternToString(p.pattern))}</span></td>
-        <td>${escapeHtml(p.position || "end")}</td>
-        <td>${p.expected ? escapeHtml(label(p.expected)) : "—"}</td>
-        <td class="right">${st.triggers}</td>
-        <td class="right">${p.expected ? st.correct : "—"}</td>
-        <td class="right">${(taxa==null) ? "—" : (taxa*100).toFixed(1)+"%"}</td>
-        <td class="right">${(probMedia==null) ? "—" : (probMedia*100).toFixed(1)+"%"}</td>
-        <td>${st.lastTriggerIndex == null ? "—" : String(st.lastTriggerIndex)}</td>
-      `;
-      patternsTableBody.appendChild(tr);
-
-      if (st.triggers > 0) {
-        lines.push(`• ${p.nome}`);
-        lines.push(`  pattern: ${patternToString(p.pattern)} (${p.position})`);
-        lines.push(`  triggers: ${st.triggers}`);
-        if (p.expected) {
-          lines.push(`  expected: ${label(p.expected)}`);
-          lines.push(`  acertos: ${st.correct} | taxa: ${(taxa*100).toFixed(1)}%`);
-          if (probMedia != null) lines.push(`  prob. média no trigger: ${(probMedia*100).toFixed(1)}%`);
-        }
-        if (st.lastTriggerIndex != null) lines.push(`  último trigger (índice): ${st.lastTriggerIndex}`);
-        lines.push(``);
-      }
-    }
-
-    summaryText.textContent = `Triggers totais: ${totalTriggers}`;
-    if (totalEvaluated > 0) {
-      const taxaGeral = totalCorrect / totalEvaluated;
-      summaryText2.textContent = `Padrões com expected — acertos: ${totalCorrect}/${totalEvaluated} (${(taxaGeral*100).toFixed(1)}%)`;
-    } else {
-      summaryText2.textContent = `Nenhum padrão com expected foi avaliado ainda (ou não houve triggers).`;
-    }
-
-    reportBox.value = lines.join("\n");
-  }
-
-  // ==================== Patterns UI ====================
-  function updatePatternsUI() {
-    patternsCount.textContent = String(PADROES.length);
-    patternsBankBody.innerHTML = "";
-
-    PADROES.forEach(p => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${escapeHtml(p.nome)}</td>
-        <td><span class="pill mono">${escapeHtml(patternToString(p.pattern))}</span></td>
-        <td>${escapeHtml(p.position || "end")}</td>
-        <td>${p.expected ? escapeHtml(label(p.expected)) : "—"}</td>
-        <td class="right">${(typeof p.minProb === "number") ? p.minProb.toFixed(2) : "0.00"}</td>
-        <td>
-          <button class="smallbtn" data-act="edit" data-id="${escapeHtml(p.id)}">Editar</button>
-          <button class="smallbtn danger" data-act="del" data-id="${escapeHtml(p.id)}">Excluir</button>
+        <td>${p.W}</td>
+        <td>${escapeHtml(rules)}</td>
+        <td class="right">${st.occ}</td>
+        <td class="right">${mc}</td>
+        <td class="right">
+          <button class="smallbtn danger" data-del="${escapeHtml(p.id)}">Excluir</button>
         </td>
       `;
-      patternsBankBody.appendChild(tr);
-    });
-
-    // bind actions (event delegation)
-    patternsBankBody.onclick = (ev) => {
+      tbody.appendChild(tr);
+    }
+    tbody.onclick = (ev) => {
       const btn = ev.target.closest("button");
       if (!btn) return;
-      const act = btn.getAttribute("data-act");
-      const id = btn.getAttribute("data-id");
-      if (!act || !id) return;
-
-      if (act === "edit") {
-        const p = PADROES.find(x => x.id === id);
-        if (!p) return;
-        editingId = p.id;
-        pName.value = p.nome || "";
-        pPattern.value = patternToString(p.pattern);
-        pPos.value = p.position || "end";
-        pExp.value = p.expected || "";
-        pMinProb.value = (typeof p.minProb === "number") ? p.minProb : 0.0;
-        pMsg.value = p.mensagem || "";
-        patternFormPill.textContent = `Editando: ${p.id}`;
-      }
-
-      if (act === "del") {
-        const ok = confirm("Excluir este padrão?");
-        if (!ok) return;
-        PADROES = PADROES.filter(x => x.id !== id);
-        editingId = null;
-        clearPatternForm();
-        rebuildAll();
-        save();
-        updatePatternsUI();
-        updatePrevUI();
-      }
+      const id = btn.getAttribute("data-del");
+      if (!id) return;
+      patterns = patterns.filter(x => x.id !== id);
+      save();
+      rebuildStats();
+      updateAll();
     };
   }
 
-  function clearPatternForm() {
-    editingId = null;
-    pName.value = "";
-    pPattern.value = "";
-    pPos.value = "end";
-    pExp.value = "";
-    pMinProb.value = "0.00";
-    pMsg.value = "";
-    patternFormPill.textContent = "—";
-  }
-
-  function parsePatternText(text) {
-    const raw = String(text || "").toUpperCase().trim();
-    if (!raw) return null;
-    // aceita espaços e vírgulas
-    const tokens = raw.split(/[\s,]+/).map(t => t.trim()).filter(Boolean);
-    if (tokens.length < 1 || tokens.length > N) return null;
-
-    for (const t of tokens) {
-      if (!(t === "*" || CORES.includes(t))) return null;
+  function renderReport(){
+    const lines = [];
+    lines.push(`MIN_OCC=${MIN_OCC} | SCOPE=${SCOPE} | Total resultados=${seq.length} | Total padrões=${patterns.length}`);
+    lines.push(`Sequenciamento: col=floor(i/6), row=i%6 (E entra normal)`);
+    lines.push(`--------------------------------------------------`);
+    for (const p of patterns){
+      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0}};
+      if (st.occ <= 0) continue;
+      lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0}`);
     }
-    return tokens;
+    $("reportBox").value = lines.join("\n");
   }
 
-  function newId() {
-    // id simples baseado em timestamp + random (sem libs)
-    return "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7);
+  function updateAll(){
+    renderRoad();
+    $("seqText").textContent = seq.length ? seq.join(" ") : "—";
+    $("seqCount").textContent = String(seq.length);
+    rebuildStats();
+    renderPatternsTable();
+    renderReport();
+    renderAlert();
+    $("pillSave").textContent = "Dados locais: ok";
   }
 
-  function validateMinProb(x) {
-    const v = Number(x);
-    if (!Number.isFinite(v)) return 0.0;
-    if (v < 0) return 0.0;
-    if (v > 1) return 1.0;
-    return v;
-  }
-
-  // ==================== Actions ====================
-  function addResult(cor) {
-    if (!CORES.includes(cor)) return;
-    seq.push(cor);
-    rebuildAll();
-    save();
-    updatePrevUI();
-    savePill.textContent = "Dados locais: ok";
-  }
-
-  btnA.addEventListener("click", () => addResult("A"));
-  btnV.addEventListener("click", () => addResult("V"));
-  btnE.addEventListener("click", () => addResult("E"));
-
-  applyN.addEventListener("click", () => {
-    const val = parseInt(nInput.value, 10);
-    if (!Number.isFinite(val) || val < 1 || val > 30) {
-      alert("N precisa estar entre 1 e 30.");
-      return;
-    }
-    N = val;
-
-    // Normaliza padrões (descarta os que ultrapassarem o novo N)
-    const norm = normalizePatterns(PADROES);
-    PADROES = norm.length ? norm : defaultPatterns();
-
-    rebuildAll();
-    save();
-    updatePrevUI();
-    updatePatternsUI();
-  });
-
-  applyMinTrig.addEventListener("click", () => {
-    const v = parseInt(minTrigInput.value, 10);
-    if (!Number.isFinite(v) || v < 1) {
-      alert("Mín. triggers precisa ser >= 1.");
-      return;
-    }
-    MIN_TRIGGERS = v;
-    save();
-    updatePrevUI();
-  });
-
-  document.getElementById("undoBtn").addEventListener("click", () => {
-    if (seq.length === 0) return;
-    seq.pop();
-    rebuildAll();
-    save();
-    updatePrevUI();
-  });
-
-  function download(filename, text) {
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    let csv = "index,cor\n";
-    for (let i = 0; i < seq.length; i++) csv += `${i+1},${seq[i]}\n`;
-    download("sequencia_cores.csv", csv);
-  });
-
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    const ok = confirm("Isso vai apagar histórico, aprendizado, padrões e acompanhamento. Confirmar?");
-    if (!ok) return;
-    seq = [];
-    counts = {};
-    PADROES = defaultPatterns();
-    clearPatternForm();
-    initPatternStats();
-    save();
-    updatePrevUI();
-    updatePatternsUI();
-  });
-
-  function parseSeq(text) {
-    const raw = String(text || "").toUpperCase().replace(/[^AVE,\s]/g, " ");
+  // ===== Import/Export =====
+  function parseSeq(text){
+    const raw = String(text||"").toUpperCase().replace(/[^AVE,\s]/g, " ");
     const tokens = raw.split(/[\s,]+/).map(t => t.trim()).filter(Boolean);
     return tokens.filter(t => CORES.includes(t));
   }
 
-  importBtn.addEventListener("click", () => {
-    const parsed = parseSeq(importBox.value || "");
-    if (parsed.length === 0) {
-      alert("Não encontrei A/V/E no que você colou.");
-      return;
-    }
-    seq = seq.concat(parsed);
-    rebuildAll();
-    save();
-    importBox.value = "";
-    updatePrevUI();
-  });
+  function download(filename, text){
+    const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
 
-  clearImportBtn.addEventListener("click", () => { importBox.value = ""; });
+  // ===== Tabs =====
+  function setTab(which){
+    $("tabAnalise").classList.remove("active");
+    $("tabPadroes").classList.remove("active");
+    $("tabRel").classList.remove("active");
+    $("viewAnalise").classList.add("hidden");
+    $("viewPadroes").classList.add("hidden");
+    $("viewRel").classList.add("hidden");
 
-  // Salvar/editar padrão
-  savePatternBtn.addEventListener("click", () => {
-    const nome = String(pName.value || "").trim();
-    const pat = parsePatternText(pPattern.value);
-    const position = (String(pPos.value || "end") === "any") ? "any" : "end";
-    const expectedRaw = String(pExp.value || "").trim().toUpperCase();
-    const expected = (expectedRaw && CORES.includes(expectedRaw)) ? expectedRaw : null;
-    const minProb = validateMinProb(pMinProb.value);
-    const mensagem = String(pMsg.value || "").trim();
+    if (which === "analise"){
+      $("tabAnalise").classList.add("active");
+      $("viewAnalise").classList.remove("hidden");
+    } else if (which === "padroes"){
+      $("tabPadroes").classList.add("active");
+      $("viewPadroes").classList.remove("hidden");
+      renderMiniGrid();
+    } else {
+      $("tabRel").classList.add("active");
+      $("viewRel").classList.remove("hidden");
+    }
+  }
 
-    if (!nome) {
-      patternFormPill.textContent = "Erro: nome vazio";
-      alert("Informe um nome para o padrão.");
-      return;
-    }
-    if (!pat) {
-      patternFormPill.textContent = "Erro: pattern inválido";
-      alert(`Pattern inválido. Use A/V/E/* com tamanho 1..N (N=${N}).`);
-      return;
-    }
-    if (expected === null && expectedRaw) {
-      patternFormPill.textContent = "Erro: expected inválido";
-      alert("Expected inválido. Use A, V, E ou deixe vazio.");
-      return;
-    }
+  // ===== Editor mini-grid =====
+  function renderMiniGrid(){
+    const grid = $("miniGrid");
+    grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${W}, 30px)`;
+    if (!miniMask || miniMask.length !== W*6) miniMask = Array(W*6).fill("");
 
-    if (editingId) {
-      const idx = PADROES.findIndex(x => x.id === editingId);
-      if (idx === -1) {
-        // se perdeu referência, cria novo
-        editingId = null;
-      } else {
-        // mantém o id
-        PADROES[idx] = { ...PADROES[idx], nome, pattern: pat, position, expected, minProb, mensagem };
-        patternFormPill.textContent = `Atualizado: ${editingId}`;
+    // desenha colunas (dx 0..W-1), linhas 0..5
+    for (let dx=0; dx<W; dx++){
+      for (let row=0; row<6; row++){
+        const idx = dx*6 + row;
+        const val = miniMask[idx] || "";
+        const div = document.createElement("div");
+        div.className = "miniCell " + classForTag(val);
+        div.textContent = val ? val : "·";
+        div.title = `col+${dx}, row ${row+1}`;
+        div.addEventListener("click", () => {
+          const mode = $("clickMode").value; // "" | 1 | 2 | 3 | A | V | E
+          miniMask[idx] = String(mode || "").toUpperCase();
+          div.className = "miniCell " + classForTag(miniMask[idx]);
+          div.textContent = miniMask[idx] ? miniMask[idx] : "·";
+          save();
+        });
+        grid.appendChild(div);
       }
     }
+  }
 
-    if (!editingId) {
-      const id = newId();
-      PADROES.push({ id, nome, pattern: pat, position, expected, minProb, mensagem });
-      patternFormPill.textContent = `Salvo: ${id}`;
-    }
+  function classForTag(val){
+    if (!val) return "tagNone";
+    if (val === "1") return "tag1";
+    if (val === "2") return "tag2";
+    if (val === "3") return "tag3";
+    if (val === "A") return "tagA";
+    if (val === "V") return "tagV";
+    if (val === "E") return "tagE";
+    return "tagNone";
+  }
 
-    // normaliza e reconstrói stats
-    PADROES = normalizePatterns(PADROES);
-    if (!PADROES.length) PADROES = defaultPatterns();
-
-    editingId = null;
+  // ===== Actions =====
+  function add(c){
+    seq.push(c);
     save();
-    rebuildAll();
-    updatePatternsUI();
-    updatePrevUI();
+    updateAll();
+  }
+
+  $("btnA").addEventListener("click", () => add("A"));
+  $("btnV").addEventListener("click", () => add("V"));
+  $("btnE").addEventListener("click", () => add("E"));
+
+  $("undoBtn").addEventListener("click", () => {
+    if (!seq.length) return;
+    seq.pop();
+    save();
+    updateAll();
   });
 
-  clearPatternFormBtn.addEventListener("click", () => clearPatternForm());
-
-  // Exportar/importar/resetar padrões
-  exportPatternsBtn.addEventListener("click", () => {
-    const json = JSON.stringify(PADROES, null, 2);
-    download("padroes_cores.json", json);
+  $("resetBtn").addEventListener("click", () => {
+    const ok = confirm("Zerar somente a sequência (mantendo padrões)?");
+    if (!ok) return;
+    seq = [];
+    save();
+    updateAll();
   });
 
-  importPatternsBtn.addEventListener("click", () => {
-    const txt = patternsJsonBox.value || "";
-    if (!txt.trim()) {
-      alert("Cole o JSON no campo para importar.");
-      return;
-    }
+  $("exportBtn").addEventListener("click", () => {
+    let csv = "index,cor\n";
+    for (let i=0;i<seq.length;i++) csv += `${i+1},${seq[i]}\n`;
+    download("sequencia.csv", csv);
+  });
+
+  $("importBtn").addEventListener("click", () => {
+    const parsed = parseSeq($("importBox").value);
+    if (!parsed.length) { alert("Não encontrei A/V/E no texto."); return; }
+    seq = seq.concat(parsed);
+    $("importBox").value = "";
+    save();
+    updateAll();
+  });
+
+  $("clearImportBtn").addEventListener("click", () => { $("importBox").value = ""; });
+
+  $("applyCfg").addEventListener("click", () => {
+    MIN_OCC = clampInt($("minOccInput").value, 1, 999);
+    SCOPE = ($("scopeSel").value === "any") ? "any" : "last";
+    save();
+    updateAll();
+  });
+
+  // Tabs
+  $("tabAnalise").addEventListener("click", () => setTab("analise"));
+  $("tabPadroes").addEventListener("click", () => setTab("padroes"));
+  $("tabRel").addEventListener("click", () => setTab("rel"));
+
+  // Editor config
+  $("buildMiniBtn").addEventListener("click", () => {
+    W = clampInt($("wInput").value, 1, 12);
+    enforceDifferent = ($("enforceDiff").value === "yes");
+    miniMask = Array(W*6).fill("");
+    save();
+    renderMiniGrid();
+  });
+
+  $("clearMiniBtn").addEventListener("click", () => {
+    miniMask = Array(W*6).fill("");
+    save();
+    renderMiniGrid();
+  });
+
+  $("enforceDiff").addEventListener("change", () => {
+    enforceDifferent = ($("enforceDiff").value === "yes");
+    save();
+  });
+
+  $("savePatBtn").addEventListener("click", () => {
+    const nome = String($("patName").value||"").trim();
+    if (!nome) { $("patPill").textContent = "Erro: nome vazio"; alert("Informe um nome."); return; }
+    if (!miniMask.some(x => x !== "")) { $("patPill").textContent = "Erro: padrão vazio"; alert("Marque ao menos 1 célula."); return; }
+
+    patterns.push({
+      id: uid(),
+      nome,
+      W,
+      mask: miniMask.slice(),
+      enforceDifferent
+    });
+
+    patterns = normalizePatterns(patterns);
+    $("patName").value = "";
+    $("patPill").textContent = "Salvo";
+    save();
+    updateAll();
+  });
+
+  $("exportPatternsBtn").addEventListener("click", () => {
+    download("padroes.json", JSON.stringify(patterns, null, 2));
+  });
+
+  $("importPatternsBtn").addEventListener("click", () => {
+    const txt = String($("patternsJsonBox").value||"").trim();
+    if (!txt) { alert("Cole o JSON no campo."); return; }
     try {
       const parsed = JSON.parse(txt);
       if (!Array.isArray(parsed)) throw new Error("JSON precisa ser um array.");
-      const norm = normalizePatterns(parsed);
-      if (!norm.length) throw new Error("Nenhum padrão válido (verifique tokens e tamanho 1..N).");
-      PADROES = norm;
-      clearPatternForm();
-      rebuildAll();
+      patterns = normalizePatterns(parsed);
+      $("patternsJsonBox").value = "";
       save();
-      updatePatternsUI();
-      updatePrevUI();
-      patternsJsonBox.value = "";
-      alert("Padrões importados com sucesso.");
-    } catch (e) {
+      updateAll();
+      alert("Padrões importados.");
+    } catch(e){
       alert("Erro ao importar: " + (e && e.message ? e.message : "JSON inválido"));
     }
   });
 
-  resetPatternsBtn.addEventListener("click", () => {
-    const ok = confirm("Resetar banco de padrões para o padrão inicial?");
+  $("resetPatternsBtn").addEventListener("click", () => {
+    const ok = confirm("Resetar padrões (apagar banco) ?");
     if (!ok) return;
-    PADROES = defaultPatterns();
-    clearPatternForm();
-    rebuildAll();
+    patterns = [];
     save();
-    updatePatternsUI();
-    updatePrevUI();
+    updateAll();
   });
 
-  // ==================== INIT ====================
+  // ===== init =====
   load();
-  if (!Array.isArray(PADROES) || !PADROES.length) PADROES = defaultPatterns();
-  rebuildAll();
-  updatePrevUI();
-  updatePatternsUI();
-  setActiveTab("prev");
+  $("minOccInput").value = String(MIN_OCC);
+  $("scopeSel").value = SCOPE;
+  $("wInput").value = String(W);
+  $("enforceDiff").value = enforceDifferent ? "yes" : "no";
+  miniMask = (miniMask && miniMask.length === W*6) ? miniMask : Array(W*6).fill("");
+
+  updateAll();
+  renderMiniGrid();
+  setTab("analise");
 })();
 </script>
-
 </body>
 </html>
