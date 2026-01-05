@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sequências Azul/Vermelho • Padrões • Confiança</title>
+  <style>
+    :root{
+      --bg:#050b1a; --panel:#0b1226; --panel2:#0a1022; --b:#1f2a44;
+      --t:#e8eefc; --m:#93a4c7;
+      --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --yellow:#eab308; --gray:#64748b;
+      --r:16px; --sh:0 18px 42px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:radial-gradient(circle at top,#0b1637 0,#050b1a 55%); color:var(--t)}
+    .wrap{max-width:1200px; margin:0 auto; padding:18px}
+    header{display:flex; gap:14px; justify-content:space-between; flex-wrap:wrap; align-items:flex-start; margin-bottom:14px}
+    h1{margin:0; font-size:1.15rem}
+    .sub{margin:6px 0 0; color:var(--m); font-size:.9rem; max-width:780px}
+    .tag{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid var(--b); border-radius:999px; background:rgba(5,11,26,.55); color:var(--m); font-size:.82rem}
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--green); box-shadow:0 0 12px rgba(34,197,94,.7)}
+    .grid{display:grid; grid-template-columns: 1.45fr 1fr; gap:14px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(145deg,var(--panel),var(--panel2)); border:1px solid rgba(31,42,68,.95); border-radius:var(--r); box-shadow:var(--sh); padding:14px}
+    .card h2{margin:0 0 4px; font-size:.98rem}
+    .muted{color:var(--m)}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{border:0; cursor:pointer; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.88rem; display:inline-flex; gap:8px; align-items:center; transition:.12s}
+    .btn:active{transform:translateY(1px)}
+    .btn-blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6); color:#eff6ff}
+    .btn-red{background:linear-gradient(135deg,#b91c1c,#ef4444); color:#ffe4e6}
+    .btn-ghost{background:rgba(5,11,26,.55); color:var(--t); border:1px solid var(--b)}
+    .pill{padding:2px 8px; border-radius:999px; border:1px solid var(--b); background:rgba(5,11,26,.55); font-size:.78rem; color:var(--m)}
+    .hist{margin-top:10px; padding:10px; min-height:54px; border:1px dashed rgba(147,164,199,.35); border-radius:12px; background:rgba(5,11,26,.45); display:flex; gap:6px; flex-wrap:wrap}
+    .chip{padding:3px 10px; border-radius:999px; border:1px solid var(--b); background:rgba(5,11,26,.6); font-size:.85rem}
+    .chip.blue{border-color:rgba(59,130,246,.8); background:rgba(37,99,235,.18); color:#bfdbfe}
+    .chip.red{border-color:rgba(239,68,68,.8); background:rgba(220,38,38,.18); color:#fecaca}
+    .divider{border-top:1px dashed rgba(147,164,199,.25); margin:12px 0}
+    input,select,textarea{background:rgba(5,11,26,.6); border:1px solid var(--b); color:var(--t); padding:7px 10px; border-radius:999px; outline:none; font-size:.9rem}
+    textarea{border-radius:12px; width:100%; min-height:70px; resize:vertical}
+    .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
+    @media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+    .stat{border:1px solid rgba(31,42,68,.95); background:rgba(5,11,26,.45); border-radius:12px; padding:10px}
+    .lab{font-size:.74rem; color:var(--m)}
+    .val{font-weight:800; font-size:1.05rem; margin-top:3px}
+    .alert{border:1px solid rgba(31,42,68,.95); background:rgba(5,11,26,.55); border-radius:14px; padding:12px}
+    .status{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; border:1px solid var(--b); background:rgba(5,11,26,.65); font-size:.9rem}
+    .sdot{width:10px;height:10px;border-radius:999px}
+    .g{background:var(--green); box-shadow:0 0 12px rgba(34,197,94,.55)}
+    .y{background:var(--yellow); box-shadow:0 0 12px rgba(234,179,8,.55)}
+    .gr{background:var(--gray); box-shadow:0 0 12px rgba(100,116,139,.55)}
+    .list{max-height:230px; overflow:auto; display:flex; flex-direction:column; gap:8px; margin-top:10px}
+    .item{border:1px solid rgba(31,42,68,.85); background:rgba(5,11,26,.55); border-radius:12px; padding:10px}
+    .itemTop{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+    .name{font-weight:800}
+    .mini{font-size:.8rem; color:var(--m)}
+    .danger{color:#fecaca}
+    .ok{color:#bbf7d0}
+    canvas{max-width:100%; border-radius:12px; border:1px solid rgba(31,42,68,.85); background:rgba(5,11,26,.35)}
+    code{color:#cbd5e1}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Sequências Azul/Vermelho • Padrões • Confiança</h1>
+      <p class="sub">
+        Registre a sequência manualmente ou importe por texto. Você pode cadastrar padrões e associar um “resultado”.
+        O sistema só sugere um resultado quando a confiança ≥ <b>80%</b> (ajustável).
+      </p>
+    </div>
+    <div class="tag"><span class="dot"></span><span>Local • sem backend • pronto para evoluir</span></div>
+  </header>
+
+  <div class="grid">
+    <!-- ESQUERDA: sequência + probabilidades + resultado -->
+    <section class="card">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <h2>Sequência atual</h2>
+          <div class="muted" style="font-size:.88rem">Adicione Azul/Vermelho, ou cole uma sequência (A/V).</div>
+        </div>
+        <span class="pill" id="countPill">0 eventos</span>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-blue" id="addBlue">Azul</button>
+        <button class="btn btn-red" id="addRed">Vermelho</button>
+        <button class="btn btn-ghost" id="undo">Desfazer</button>
+        <button class="btn btn-ghost" id="clear">Limpar</button>
+      </div>
+
+      <div class="hist" id="histBox"><span class="muted">Nenhum evento.</span></div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div style="flex:1">
+          <div class="muted" style="font-size:.82rem">Importar sequência por texto (A/V separados por espaço):</div>
+          <input id="seqInput" placeholder="Ex.: A V A A V" style="width:100%; margin-top:6px" />
+        </div>
+        <button class="btn btn-ghost" id="applySeq">Aplicar</button>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <label class="muted" style="font-size:.85rem">Janela (últimos N):</label>
+        <input id="windowN" type="number" min="10" max="500" step="10" value="100" style="width:92px" />
+        <label class="muted" style="font-size:.85rem">Confiança mínima:</label>
+        <input id="minConf" type="number" min="50" max="99" step="1" value="80" style="width:82px" />
+        <span class="pill">%</span>
+        <button class="btn btn-ghost" id="saveLocal">Salvar (local)</button>
+        <button class="btn btn-ghost" id="loadLocal">Carregar (local)</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="lab">p(Azul) na janela</div>
+          <div class="val" id="pBlue">0%</div>
+          <div class="mini" id="cBlue">0 ocorrências</div>
+        </div>
+        <div class="stat">
+          <div class="lab">p(Vermelho) na janela</div>
+          <div class="val" id="pRed">0%</div>
+          <div class="mini" id="cRed">0 ocorrências</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Streak atual (janela)</div>
+          <div class="val" id="streak">–</div>
+          <div class="mini" id="streakInfo">Sem dados</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Alternância (%)</div>
+          <div class="val" id="alt">0%</div>
+          <div class="mini" id="altInfo">–</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Volatilidade (0–1)</div>
+          <div class="val" id="vol">0.00</div>
+          <div class="mini">≈ taxa de alternância</div>
+        </div>
+        <div class="stat">
+          <div class="lab">Padrão detectado</div>
+          <div class="val" id="patName">Nenhum</div>
+          <div class="mini" id="patOut">–</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="alert">
+        <div class="row" style="justify-content:space-between">
+          <div class="status" id="statusChip">
+            <span class="sdot gr" id="statusDot"></span>
+            <span id="statusText">Neutro</span>
+          </div>
+          <span class="pill" id="confidenceText">confiança: 0%</span>
+        </div>
+
+        <div class="muted" style="font-size:.86rem; margin-top:8px" id="explain">
+          Cadastre padrões e registre dados para obter sugestão quando a confiança atingir o limite.
+        </div>
+      </div>
+    </section>
+
+    <!-- DIREITA: padrões + importação por imagem -->
+    <section class="card">
+      <h2>Padrões</h2>
+      <div class="muted" style="font-size:.88rem">
+        Monte uma sequência e associe um resultado. O sistema dá prioridade ao padrão mais longo que casar com o final da janela.
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <button class="btn btn-blue" id="pAddBlue">Azul</button>
+        <button class="btn btn-red" id="pAddRed">Vermelho</button>
+        <button class="btn btn-ghost" id="pClear">Limpar seq.</button>
+      </div>
+      <div class="hist" id="pBox"><span class="muted">Monte a sequência do padrão.</span></div>
+
+      <div class="row" style="margin-top:10px">
+        <input id="pName" placeholder="Nome do padrão" style="flex:1" />
+        <select id="pResult" style="width:160px">
+          <option value="none">Sem resultado</option>
+          <option value="blue">Resultado: Azul</option>
+          <option value="red">Resultado: Vermelho</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn btn-ghost" id="pSave">Salvar padrão</button>
+        <button class="btn btn-ghost" id="pResetAll">Apagar padrões</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Importar por imagem</h2>
+      <div class="muted" style="font-size:.88rem">
+        - [não verificado] Isso tenta extrair bolinhas azuis/vermelhas por heurística (sem treino).
+        Funciona melhor com fundo claro/limpo e bolinhas bem separadas.
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <input type="file" id="imgFile" accept="image/*" />
+        <button class="btn btn-ghost" id="scanImg">Ler imagem</button>
+      </div>
+
+      <canvas id="cv" width="640" height="360" style="margin-top:10px"></canvas>
+
+      <div class="muted" style="font-size:.86rem; margin-top:8px">
+        Resultado da leitura (A/V): <code id="imgSeq">—</code>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <button class="btn btn-ghost" id="applyImgSeq">Aplicar sequência da imagem</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Padrões salvos</h2>
+      <div class="list" id="pList"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+/* =========================
+   Estado + persistência
+========================= */
+const S = {
+  history: [],            // "blue" | "red"
+  windowN: 100,
+  minConf: 80,            // %
+  patterns: [],           // {id,name,seq:["blue","red"...], out:"blue"|"red"|"none", hits, seen}
+  draft: [],              // builder patterns
+  nextId: 1,
+  imgSeq: []              // last scan result
+};
+
+function pct(x){ return (x*100).toFixed(1).replace(".",",") + "%"; }
+function clamp(n,a,b){ return Math.max(a,Math.min(b,n)); }
+
+function saveLocal(){
+  const payload = {
+    history:S.history, windowN:S.windowN, minConf:S.minConf,
+    patterns:S.patterns, nextId:S.nextId
+  };
+  localStorage.setItem("color_seq_app_v1", JSON.stringify(payload));
+}
+function loadLocal(){
+  const raw = localStorage.getItem("color_seq_app_v1");
+  if(!raw) return false;
+  try{
+    const p = JSON.parse(raw);
+    if(Array.isArray(p.history)) S.history = p.history;
+    if(typeof p.windowN==="number") S.windowN = p.windowN;
+    if(typeof p.minConf==="number") S.minConf = p.minConf;
+    if(Array.isArray(p.patterns)) S.patterns = p.patterns;
+    if(typeof p.nextId==="number") S.nextId = p.nextId;
+    return true;
+  }catch{ return false; }
+}
+
+/* =========================
+   Estatística básica
+========================= */
+function sample(){
+  const n = Math.min(S.windowN, S.history.length);
+  return S.history.slice(S.history.length - n);
+}
+function stats(seq){
+  const n = seq.length;
+  let b=0,r=0;
+  for(const c of seq){ if(c==="blue") b++; else if(c==="red") r++; }
+  const pb = n? b/n : 0;
+  const pr = n? r/n : 0;
+
+  // streak final
+  let st=0, stc=null;
+  if(n){
+    stc = seq[n-1];
+    for(let i=n-1;i>=0;i--){ if(seq[i]===stc) st++; else break; }
+  }
+
+  // alternância
+  let alt=0;
+  for(let i=1;i<n;i++) if(seq[i]!==seq[i-1]) alt++;
+  const altRate = (n>1)? alt/(n-1) : 0;
+
+  return {n,b,r,pb,pr,st,stc,altRate,vol:altRate};
+}
+
+/* =========================
+   Padrões: casar final
+   + pontuação simples (hits/seen)
+========================= */
+function matchPattern(seq){
+  if(!S.patterns.length || !seq.length) return null;
+  let best=null;
+  for(const p of S.patterns){
+    const L = p.seq.length;
+    if(L===0 || seq.length<L) continue;
+    const tail = seq.slice(seq.length-L);
+    let ok=true;
+    for(let i=0;i<L;i++){ if(tail[i]!==p.seq[i]){ ok=false; break; } }
+    if(ok && (!best || L>best.seq.length)) best=p;
+  }
+  return best;
+}
+
+// Atualiza contadores de padrão usando o histórico (modo simples)
+function updatePatternPerformance(){
+  // Para não explodir custo, calcula em uma janela limitada do histórico
+  const seq = sample();
+  for(const p of S.patterns){
+    p.seen = 0;
+    p.hits = 0;
+    const L = p.seq.length;
+    if(L===0) continue;
+    // Varre todas as posições possíveis dentro da janela
+    for(let i=0; i+L < seq.length; i++){
+      // se p.seq bate em seq[i..i+L-1], então "prevê" seq[i+L] (próximo)
+      let ok=true;
+      for(let j=0;j<L;j++){
+        if(seq[i+j]!==p.seq[j]){ ok=false; break; }
+      }
+      if(!ok) continue;
+      p.seen++;
+      if(p.out!=="none" && seq[i+L]===p.out) p.hits++;
+    }
+  }
+}
+
+/* =========================
+   Confiança (neutra)
+   - Combina:
+     (1) prob. frequência (janela)
+     (2) acurácia do padrão (hits/seen)
+   Regra de sugestão:
+     - deve existir cor candidata (blue/red)
+     - confiança >= minConf
+========================= */
+function computeDecision(seq){
+  const st = stats(seq);
+  updatePatternPerformance();
+
+  const pat = matchPattern(seq);
+  let patOut = "none";
+  let patAcc = null;
+
+  if(pat){
+    patOut = pat.out;
+    if(pat.out!=="none" && pat.seen>0){
+      patAcc = pat.hits / pat.seen; // 0..1
+    }
+  }
+
+  // prob de base: maior frequência na janela
+  const baseColor = (st.pb>st.pr) ? "blue" : (st.pr>st.pb ? "red" : "none");
+  const baseProb  = (baseColor==="blue") ? st.pb : (baseColor==="red" ? st.pr : 0);
+
+  // cor proposta:
+  // - se padrão tem saída: usamos a saída do padrão
+  // - senão, usamos a cor de base
+  let proposed = "none";
+  if(patOut==="blue" || patOut==="red") proposed = patOut;
+  else proposed = baseColor;
+
+  // confiança:
+  // - se há acurácia de padrão, combina 60% padrão + 40% base
+  // - senão, usa só base
+  let conf = 0;
+  if(proposed==="none"){
+    conf = 0;
+  } else {
+    const baseForProposed = (proposed==="blue") ? st.pb : st.pr;
+    if(patAcc!==null){
+      conf = 0.6*patAcc + 0.4*baseForProposed;
+    } else {
+      conf = baseForProposed;
+    }
+  }
+
+  // status
+  const min = S.minConf/100;
+  const ok = (proposed!=="none" && conf>=min);
+
+  return {
+    st, pat,
+    proposed,
+    confidence: conf,
+    ok,
+    baseColor,
+    baseProb,
+    patOut,
+    patAcc
+  };
+}
+
+/* =========================
+   Render
+========================= */
+function renderHistory(){
+  const box = document.getElementById("histBox");
+  box.innerHTML = "";
+  if(!S.history.length){
+    box.innerHTML = '<span class="muted">Nenhum evento.</span>';
+  } else {
+    for(const c of S.history){
+      const el = document.createElement("span");
+      el.className = "chip " + (c==="blue"?"blue":"red");
+      el.textContent = (c==="blue"?"A":"V");
+      box.appendChild(el);
+    }
+  }
+  document.getElementById("countPill").textContent = `${S.history.length} eventos`;
+}
+
+function renderDraft(){
+  const box = document.getElementById("pBox");
+  box.innerHTML = "";
+  if(!S.draft.length){
+    box.innerHTML = '<span class="muted">Monte a sequência do padrão.</span>';
+  } else {
+    for(const c of S.draft){
+      const el = document.createElement("span");
+      el.className = "chip " + (c==="blue"?"blue":"red");
+      el.textContent = (c==="blue"?"A":"V");
+      box.appendChild(el);
+    }
+  }
+}
+
+function renderPatterns(){
+  const list = document.getElementById("pList");
+  list.innerHTML = "";
+  if(!S.patterns.length){
+    list.innerHTML = '<div class="muted">Nenhum padrão salvo.</div>';
+    return;
+  }
+  for(const p of S.patterns){
+    const div = document.createElement("div");
+    div.className = "item";
+    const seq = p.seq.map(x=>x==="blue"?"A":"V").join(" ");
+    const out = (p.out==="blue"?"Azul":(p.out==="red"?"Vermelho":"—"));
+    const seen = (typeof p.seen==="number") ? p.seen : 0;
+    const hits = (typeof p.hits==="number") ? p.hits : 0;
+    const acc = (p.out!=="none" && seen>0) ? (hits/seen) : null;
+
+    div.innerHTML = `
+      <div class="itemTop">
+        <div>
+          <div class="name">${escapeHtml(p.name)}</div>
+          <div class="mini">Seq.: <code>${seq}</code> • Resultado: <b>${out}</b></div>
+          <div class="mini">Desempenho na janela: seen=${seen}, hits=${hits}${acc!==null ? `, acc=${(acc*100).toFixed(1)}%` : ""}</div>
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost" data-del="${p.id}">Excluir</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  }
+
+  list.querySelectorAll("[data-del]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const id = Number(btn.getAttribute("data-del"));
+      S.patterns = S.patterns.filter(x=>x.id!==id);
+      refresh();
+    });
+  });
+}
+
+function renderDecision(){
+  const seq = sample();
+  const d = computeDecision(seq);
+
+  // stats UI
+  const pb = d.st.pb, pr = d.st.pr;
+  document.getElementById("pBlue").textContent = pct(pb);
+  document.getElementById("pRed").textContent  = pct(pr);
+  document.getElementById("cBlue").textContent = `${d.st.b} ocorrências`;
+  document.getElementById("cRed").textContent  = `${d.st.r} ocorrências`;
+
+  // streak
+  if(d.st.n===0){
+    document.getElementById("streak").textContent = "–";
+    document.getElementById("streakInfo").textContent = "Sem dados";
+  } else {
+    document.getElementById("streak").textContent = `${d.st.st}x`;
+    document.getElementById("streakInfo").textContent = (d.st.stc==="blue" ? "Azul" : "Vermelho");
+  }
+
+  // alternância/volatilidade
+  document.getElementById("alt").textContent = pct(d.st.altRate);
+  document.getElementById("altInfo").textContent = (d.st.n<2 ? "–" : (d.st.altRate<0.2 ? "Baixa alternância" : d.st.altRate<0.5 ? "Alternância moderada" : "Alta alternância"));
+  document.getElementById("vol").textContent = d.st.vol.toFixed(2);
+
+  // padrão detectado
+  document.getElementById("patName").textContent = d.pat ? d.pat.name : "Nenhum";
+  document.getElementById("patOut").textContent = d.pat ? (
+    d.patOut==="blue" ? "Resultado: Azul" : d.patOut==="red" ? "Resultado: Vermelho" : "Sem resultado"
+  ) : "–";
+
+  // status + explicação
+  const dot = document.getElementById("statusDot");
+  const st = document.getElementById("statusText");
+  const exp = document.getElementById("explain");
+  const confPct = Math.round(d.confidence*100);
+  document.getElementById("confidenceText").textContent = `confiança: ${confPct}%`;
+
+  dot.className = "sdot " + (d.ok ? "g" : (confPct>=60 ? "y" : "gr"));
+  st.textContent = d.ok ? "Sugestão liberada" : (confPct>=60 ? "Atenção" : "Neutro");
+
+  if(d.st.n===0){
+    exp.textContent = "Sem dados suficientes na janela.";
+    return;
+  }
+
+  if(d.proposed==="none"){
+    exp.textContent = "Sequência equilibrada/indefinida na janela.";
+    return;
+  }
+
+  const colorLabel = (d.proposed==="blue" ? "Azul" : "Vermelho");
+  const min = S.minConf;
+
+  const parts = [];
+  parts.push(`Proposta: ${colorLabel}.`);
+  parts.push(`Confiança estimada: ${confPct}% (limite: ${min}%).`);
+  if(d.pat){
+    parts.push(`Padrão casou: "${d.pat.name}".`);
+    if(d.patAcc!==null){
+      parts.push(`Acurácia do padrão na janela: ${(d.patAcc*100).toFixed(1)}%.`);
+    } else if(d.patOut==="none"){
+      parts.push(`Padrão sem resultado associado (não contribui com acurácia).`);
+    } else {
+      parts.push(`Padrão com resultado, porém sem ocorrências suficientes na janela para medir acurácia.`);
+    }
+  } else {
+    parts.push(`Nenhum padrão casou com o final da janela.`);
+  }
+  parts.push(`Frequência na janela: Azul ${pct(d.st.pb)}, Vermelho ${pct(d.st.pr)}.`);
+
+  exp.textContent = parts.join(" ");
+}
+
+function refresh(){
+  S.windowN = clamp(parseInt(document.getElementById("windowN").value||"100",10),10,500);
+  S.minConf = clamp(parseInt(document.getElementById("minConf").value||"80",10),50,99);
+  document.getElementById("windowN").value = S.windowN;
+  document.getElementById("minConf").value = S.minConf;
+
+  renderHistory();
+  renderDraft();
+  renderPatterns();
+  renderDecision();
+}
+
+/* =========================
+   Ações sequência
+========================= */
+document.getElementById("addBlue").addEventListener("click", ()=>{ S.history.push("blue"); refresh(); });
+document.getElementById("addRed").addEventListener("click",  ()=>{ S.history.push("red"); refresh(); });
+document.getElementById("undo").addEventListener("click",    ()=>{ S.history.pop(); refresh(); });
+document.getElementById("clear").addEventListener("click",   ()=>{ if(confirm("Limpar sequência?")){ S.history=[]; refresh(); }});
+
+document.getElementById("applySeq").addEventListener("click", ()=>{
+  const raw = document.getElementById("seqInput").value.trim();
+  if(!raw) return;
+  const toks = raw.split(/\s+/);
+  const seq=[];
+  for(const t of toks){
+    const u = t.toUpperCase();
+    if(u==="A") seq.push("blue");
+    else if(u==="V") seq.push("red");
+    else { alert(`Token inválido: "${t}" (use apenas A ou V)`); return; }
+  }
+  S.history = seq;
+  refresh();
+});
+
+/* =========================
+   Ações padrões
+========================= */
+document.getElementById("pAddBlue").addEventListener("click", ()=>{ S.draft.push("blue"); renderDraft(); });
+document.getElementById("pAddRed").addEventListener("click",  ()=>{ S.draft.push("red");  renderDraft(); });
+document.getElementById("pClear").addEventListener("click",   ()=>{ S.draft=[]; renderDraft(); });
+
+document.getElementById("pSave").addEventListener("click", ()=>{
+  const name = document.getElementById("pName").value.trim();
+  const out  = document.getElementById("pResult").value; // none|blue|red
+  if(!name){ alert("Informe o nome do padrão."); return; }
+  if(S.draft.length===0){ alert("Monte a sequência do padrão."); return; }
+
+  S.patterns.push({id:S.nextId++, name, seq:[...S.draft], out, hits:0, seen:0});
+  S.draft = [];
+  document.getElementById("pName").value = "";
+  document.getElementById("pResult").value = "none";
+  refresh();
+});
+
+document.getElementById("pResetAll").addEventListener("click", ()=>{
+  if(confirm("Apagar todos os padrões?")){
+    S.patterns = [];
+    refresh();
+  }
+});
+
+/* =========================
+   Persistência
+========================= */
+document.getElementById("saveLocal").addEventListener("click", ()=>{
+  saveLocal();
+  alert("Salvo no navegador (localStorage).");
+});
+document.getElementById("loadLocal").addEventListener("click", ()=>{
+  const ok = loadLocal();
+  if(!ok){ alert("Nada salvo para carregar."); return; }
+  document.getElementById("windowN").value = S.windowN;
+  document.getElementById("minConf").value = S.minConf;
+  refresh();
+});
+
+/* =========================
+   Importar por imagem (heurística)
+   - Detecta pixels predominantes em faixas horizontais.
+   - É propositalmente simples: NÃO é ML treinado.
+========================= */
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d", { willReadFrequently: true });
+let imgObj = null;
+
+document.getElementById("imgFile").addEventListener("change", (e)=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  const url = URL.createObjectURL(f);
+  const img = new Image();
+  img.onload = ()=>{
+    imgObj = img;
+    // ajusta canvas mantendo proporção
+    const maxW = 640, maxH = 360;
+    let w = img.width, h = img.height;
+    const s = Math.min(maxW/w, maxH/h, 1);
+    w = Math.round(w*s); h = Math.round(h*s);
+    cv.width = w; cv.height = h;
+    ctx.clearRect(0,0,w,h);
+    ctx.drawImage(img,0,0,w,h);
+  };
+  img.src = url;
+});
+
+document.getElementById("scanImg").addEventListener("click", ()=>{
+  if(!imgObj){ alert("Envie uma imagem primeiro."); return; }
+
+  const {width:w, height:h} = cv;
+  const imgData = ctx.getImageData(0,0,w,h).data;
+
+  // Heurística: amostragem em 12 colunas (da esquerda p/ direita), escolhendo a cor dominante
+  // em uma faixa central (evita bordas).
+  const cols = 12;
+  const top = Math.floor(h*0.25), bot = Math.floor(h*0.75);
+  const seq = [];
+
+  for(let c=0;c<cols;c++){
+    const x0 = Math.floor((c/cols)*w);
+    const x1 = Math.floor(((c+1)/cols)*w);
+    let blueScore=0, redScore=0;
+
+    for(let y=top; y<bot; y+=2){
+      for(let x=x0; x<x1; x+=2){
+        const i = (y*w + x)*4;
+        const r = imgData[i], g = imgData[i+1], b = imgData[i+2];
+
+        // simples pontuação por dominância
+        if(b > r + 25 && b > g + 15) blueScore++;
+        if(r > b + 25 && r > g + 15) redScore++;
+      }
+    }
+
+    if(blueScore===0 && redScore===0) continue;
+    if(blueScore > redScore) seq.push("blue");
+    else if(redScore > blueScore) seq.push("red");
+  }
+
+  S.imgSeq = seq;
+  document.getElementById("imgSeq").textContent = seq.length ? seq.map(x=>x==="blue"?"A":"V").join(" ") : "—";
+  alert(seq.length ? "Sequência estimada extraída (heurística)." : "Não consegui identificar cores suficientes na imagem.");
+});
+
+document.getElementById("applyImgSeq").addEventListener("click", ()=>{
+  if(!S.imgSeq.length){ alert("Nenhuma sequência lida da imagem."); return; }
+  S.history = [...S.imgSeq];
+  refresh();
+});
+
+/* =========================
+   helpers
+========================= */
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+/* init */
+refresh();
+</script>
+</body>
+</html>
