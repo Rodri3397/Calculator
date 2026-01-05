@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sequências Azul/Vermelho • Padrões • Confiança</title>
+  <title>Sequências Azul/Vermelho • Padrões • Detecção Automática</title>
   <style>
     :root{
       --bg:#050b1a; --panel:#0b1226; --panel2:#0a1022; --b:#1f2a44;
@@ -54,8 +54,6 @@
     .itemTop{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
     .name{font-weight:800}
     .mini{font-size:.8rem; color:var(--m)}
-    .danger{color:#fecaca}
-    .ok{color:#bbf7d0}
     canvas{max-width:100%; border-radius:12px; border:1px solid rgba(31,42,68,.85); background:rgba(5,11,26,.35)}
     code{color:#cbd5e1}
   </style>
@@ -64,17 +62,17 @@
 <div class="wrap">
   <header>
     <div>
-      <h1>Sequências Azul/Vermelho • Padrões • Confiança</h1>
+      <h1>Sequências Azul/Vermelho • Padrões • Detecção Automática</h1>
       <p class="sub">
-        Registre a sequência manualmente ou importe por texto. Você pode cadastrar padrões e associar um “resultado”.
-        O sistema só sugere um resultado quando a confiança ≥ <b>80%</b> (ajustável).
+        Use como ferramenta genérica de análise de sequências: você registra Azul/Vermelho, cadastra padrões e importa por imagem.
+        A sugestão só aparece quando a confiança ≥ <b>80%</b> (ajustável).
       </p>
     </div>
-    <div class="tag"><span class="dot"></span><span>Local • sem backend • pronto para evoluir</span></div>
+    <div class="tag"><span class="dot"></span><span>Front-end único • localStorage • sem backend</span></div>
   </header>
 
   <div class="grid">
-    <!-- ESQUERDA: sequência + probabilidades + resultado -->
+    <!-- ESQUERDA -->
     <section class="card">
       <div class="row" style="justify-content:space-between">
         <div>
@@ -97,7 +95,7 @@
 
       <div class="row">
         <div style="flex:1">
-          <div class="muted" style="font-size:.82rem">Importar sequência por texto (A/V separados por espaço):</div>
+          <div class="muted" style="font-size:.82rem">Importar por texto (A/V separados por espaço):</div>
           <input id="seqInput" placeholder="Ex.: A V A A V" style="width:100%; margin-top:6px" />
         </div>
         <button class="btn btn-ghost" id="applySeq">Aplicar</button>
@@ -163,11 +161,11 @@
       </div>
     </section>
 
-    <!-- DIREITA: padrões + importação por imagem -->
+    <!-- DIREITA -->
     <section class="card">
       <h2>Padrões</h2>
       <div class="muted" style="font-size:.88rem">
-        Monte uma sequência e associe um resultado. O sistema dá prioridade ao padrão mais longo que casar com o final da janela.
+        Monte uma sequência e associe um resultado. O sistema prioriza o padrão mais longo que casar com o final da janela.
       </div>
 
       <div class="divider"></div>
@@ -181,7 +179,7 @@
 
       <div class="row" style="margin-top:10px">
         <input id="pName" placeholder="Nome do padrão" style="flex:1" />
-        <select id="pResult" style="width:160px">
+        <select id="pResult" style="width:170px">
           <option value="none">Sem resultado</option>
           <option value="blue">Resultado: Azul</option>
           <option value="red">Resultado: Vermelho</option>
@@ -194,10 +192,9 @@
 
       <div class="divider"></div>
 
-      <h2>Importar por imagem</h2>
+      <h2>Detecção automática por imagem</h2>
       <div class="muted" style="font-size:.88rem">
-        - [não verificado] Isso tenta extrair bolinhas azuis/vermelhas por heurística (sem treino).
-        Funciona melhor com fundo claro/limpo e bolinhas bem separadas.
+        - [não verificado] Detecção por cor em HSV + componentes conectados. Pode exigir ajuste dependendo do print.
       </div>
 
       <div class="row" style="margin-top:10px">
@@ -208,7 +205,7 @@
       <canvas id="cv" width="640" height="360" style="margin-top:10px"></canvas>
 
       <div class="muted" style="font-size:.86rem; margin-top:8px">
-        Resultado da leitura (A/V): <code id="imgSeq">—</code>
+        Sequência extraída (A/V): <code id="imgSeq">—</code>
       </div>
 
       <div class="row" style="margin-top:8px">
@@ -231,7 +228,7 @@ const S = {
   history: [],            // "blue" | "red"
   windowN: 100,
   minConf: 80,            // %
-  patterns: [],           // {id,name,seq:["blue","red"...], out:"blue"|"red"|"none", hits, seen}
+  patterns: [],           // {id,name,seq,out,hits,seen}
   draft: [],              // builder patterns
   nextId: 1,
   imgSeq: []              // last scan result
@@ -245,10 +242,10 @@ function saveLocal(){
     history:S.history, windowN:S.windowN, minConf:S.minConf,
     patterns:S.patterns, nextId:S.nextId
   };
-  localStorage.setItem("color_seq_app_v1", JSON.stringify(payload));
+  localStorage.setItem("color_seq_app_v2", JSON.stringify(payload));
 }
 function loadLocal(){
-  const raw = localStorage.getItem("color_seq_app_v1");
+  const raw = localStorage.getItem("color_seq_app_v2");
   if(!raw) return false;
   try{
     const p = JSON.parse(raw);
@@ -308,18 +305,16 @@ function matchPattern(seq){
   return best;
 }
 
-// Atualiza contadores de padrão usando o histórico (modo simples)
+// Atualiza contadores de padrão usando o histórico (modo simples, na janela)
 function updatePatternPerformance(){
-  // Para não explodir custo, calcula em uma janela limitada do histórico
   const seq = sample();
   for(const p of S.patterns){
     p.seen = 0;
     p.hits = 0;
     const L = p.seq.length;
     if(L===0) continue;
-    // Varre todas as posições possíveis dentro da janela
+
     for(let i=0; i+L < seq.length; i++){
-      // se p.seq bate em seq[i..i+L-1], então "prevê" seq[i+L] (próximo)
       let ok=true;
       for(let j=0;j<L;j++){
         if(seq[i+j]!==p.seq[j]){ ok=false; break; }
@@ -333,12 +328,6 @@ function updatePatternPerformance(){
 
 /* =========================
    Confiança (neutra)
-   - Combina:
-     (1) prob. frequência (janela)
-     (2) acurácia do padrão (hits/seen)
-   Regra de sugestão:
-     - deve existir cor candidata (blue/red)
-     - confiança >= minConf
 ========================= */
 function computeDecision(seq){
   const st = stats(seq);
@@ -351,24 +340,19 @@ function computeDecision(seq){
   if(pat){
     patOut = pat.out;
     if(pat.out!=="none" && pat.seen>0){
-      patAcc = pat.hits / pat.seen; // 0..1
+      patAcc = pat.hits / pat.seen;
     }
   }
 
-  // prob de base: maior frequência na janela
+  // base: maior frequência na janela
   const baseColor = (st.pb>st.pr) ? "blue" : (st.pr>st.pb ? "red" : "none");
-  const baseProb  = (baseColor==="blue") ? st.pb : (baseColor==="red" ? st.pr : 0);
 
   // cor proposta:
-  // - se padrão tem saída: usamos a saída do padrão
-  // - senão, usamos a cor de base
   let proposed = "none";
   if(patOut==="blue" || patOut==="red") proposed = patOut;
   else proposed = baseColor;
 
   // confiança:
-  // - se há acurácia de padrão, combina 60% padrão + 40% base
-  // - senão, usa só base
   let conf = 0;
   if(proposed==="none"){
     conf = 0;
@@ -381,20 +365,10 @@ function computeDecision(seq){
     }
   }
 
-  // status
   const min = S.minConf/100;
   const ok = (proposed!=="none" && conf>=min);
 
-  return {
-    st, pat,
-    proposed,
-    confidence: conf,
-    ok,
-    baseColor,
-    baseProb,
-    patOut,
-    patAcc
-  };
+  return { st, pat, proposed, confidence: conf, ok, patOut, patAcc };
 }
 
 /* =========================
@@ -452,7 +426,7 @@ function renderPatterns(){
         <div>
           <div class="name">${escapeHtml(p.name)}</div>
           <div class="mini">Seq.: <code>${seq}</code> • Resultado: <b>${out}</b></div>
-          <div class="mini">Desempenho na janela: seen=${seen}, hits=${hits}${acc!==null ? `, acc=${(acc*100).toFixed(1)}%` : ""}</div>
+          <div class="mini">Na janela: seen=${seen}, hits=${hits}${acc!==null ? `, acc=${(acc*100).toFixed(1)}%` : ""}</div>
         </div>
         <div class="row">
           <button class="btn btn-ghost" data-del="${p.id}">Excluir</button>
@@ -476,9 +450,8 @@ function renderDecision(){
   const d = computeDecision(seq);
 
   // stats UI
-  const pb = d.st.pb, pr = d.st.pr;
-  document.getElementById("pBlue").textContent = pct(pb);
-  document.getElementById("pRed").textContent  = pct(pr);
+  document.getElementById("pBlue").textContent = pct(d.st.pb);
+  document.getElementById("pRed").textContent  = pct(d.st.pr);
   document.getElementById("cBlue").textContent = `${d.st.b} ocorrências`;
   document.getElementById("cRed").textContent  = `${d.st.r} ocorrências`;
 
@@ -493,7 +466,8 @@ function renderDecision(){
 
   // alternância/volatilidade
   document.getElementById("alt").textContent = pct(d.st.altRate);
-  document.getElementById("altInfo").textContent = (d.st.n<2 ? "–" : (d.st.altRate<0.2 ? "Baixa alternância" : d.st.altRate<0.5 ? "Alternância moderada" : "Alta alternância"));
+  document.getElementById("altInfo").textContent =
+    (d.st.n<2 ? "–" : (d.st.altRate<0.2 ? "Baixa alternância" : d.st.altRate<0.5 ? "Alternância moderada" : "Alta alternância"));
   document.getElementById("vol").textContent = d.st.vol.toFixed(2);
 
   // padrão detectado
@@ -623,9 +597,7 @@ document.getElementById("loadLocal").addEventListener("click", ()=>{
 });
 
 /* =========================
-   Importar por imagem (heurística)
-   - Detecta pixels predominantes em faixas horizontais.
-   - É propositalmente simples: NÃO é ML treinado.
+   Importar por imagem (detecção automática)
 ========================= */
 const cv = document.getElementById("cv");
 const ctx = cv.getContext("2d", { willReadFrequently: true });
@@ -638,11 +610,13 @@ document.getElementById("imgFile").addEventListener("change", (e)=>{
   const img = new Image();
   img.onload = ()=>{
     imgObj = img;
-    // ajusta canvas mantendo proporção
+
+    // Ajusta canvas mantendo proporção (até 640x360)
     const maxW = 640, maxH = 360;
     let w = img.width, h = img.height;
     const s = Math.min(maxW/w, maxH/h, 1);
     w = Math.round(w*s); h = Math.round(h*s);
+
     cv.width = w; cv.height = h;
     ctx.clearRect(0,0,w,h);
     ctx.drawImage(img,0,0,w,h);
@@ -650,42 +624,206 @@ document.getElementById("imgFile").addEventListener("change", (e)=>{
   img.src = url;
 });
 
-document.getElementById("scanImg").addEventListener("click", ()=>{
-  if(!imgObj){ alert("Envie uma imagem primeiro."); return; }
+document.getElementById("scanImg").addEventListener("click", () => {
+  if (!imgObj) { alert("Envie uma imagem primeiro."); return; }
 
-  const {width:w, height:h} = cv;
-  const imgData = ctx.getImageData(0,0,w,h).data;
+  const w = cv.width, h = cv.height;
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
 
-  // Heurística: amostragem em 12 colunas (da esquerda p/ direita), escolhendo a cor dominante
-  // em uma faixa central (evita bordas).
-  const cols = 12;
-  const top = Math.floor(h*0.25), bot = Math.floor(h*0.75);
-  const seq = [];
+  // ===== Configs (ajuste se necessário) =====
+  const CFG = {
+    blue: { hMin: 190, hMax: 250, sMin: 0.35, vMin: 0.20 },
+    red1: { hMin: 0,   hMax: 18,  sMin: 0.35, vMin: 0.20 },
+    red2: { hMin: 342, hMax: 360, sMin: 0.35, vMin: 0.20 },
 
-  for(let c=0;c<cols;c++){
-    const x0 = Math.floor((c/cols)*w);
-    const x1 = Math.floor(((c+1)/cols)*w);
-    let blueScore=0, redScore=0;
+    minBlobArea: Math.max(80, Math.floor((w * h) * 0.00015)),
+    rowYThreshold: Math.max(12, Math.floor(h * 0.03)),
+    drawDebug: true
+  };
 
-    for(let y=top; y<bot; y+=2){
-      for(let x=x0; x<x1; x+=2){
-        const i = (y*w + x)*4;
-        const r = imgData[i], g = imgData[i+1], b = imgData[i+2];
+  function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const d = max - min;
 
-        // simples pontuação por dominância
-        if(b > r + 25 && b > g + 15) blueScore++;
-        if(r > b + 25 && r > g + 15) redScore++;
-      }
+    let h = 0;
+    if (d !== 0) {
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60;
+      if (h < 0) h += 360;
     }
-
-    if(blueScore===0 && redScore===0) continue;
-    if(blueScore > redScore) seq.push("blue");
-    else if(redScore > blueScore) seq.push("red");
+    const s = max === 0 ? 0 : d / max;
+    const v = max;
+    return { h, s, v };
   }
 
+  function inRangeHSV(hsv, range) {
+    return hsv.h >= range.hMin && hsv.h <= range.hMax && hsv.s >= range.sMin && hsv.v >= range.vMin;
+  }
+
+  // 1) máscaras
+  const blueMask = new Uint8Array(w * h);
+  const redMask  = new Uint8Array(w * h);
+
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      const hsv = rgbToHsv(r, g, b);
+
+      if (inRangeHSV(hsv, CFG.blue)) blueMask[y * w + x] = 1;
+      if (inRangeHSV(hsv, CFG.red1) || inRangeHSV(hsv, CFG.red2)) redMask[y * w + x] = 1;
+    }
+  }
+
+  // 2) denoise simples
+  function denoise(mask) {
+    const out = new Uint8Array(mask.length);
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        let sum = 0;
+        const idx = y * w + x;
+        sum += mask[idx];
+        sum += mask[idx - 1] + mask[idx + 1];
+        sum += mask[idx - w] + mask[idx + w];
+        sum += mask[idx - w - 1] + mask[idx - w + 1];
+        sum += mask[idx + w - 1] + mask[idx + w + 1];
+        if (sum >= 3) out[idx] = 1;
+      }
+    }
+    return out;
+  }
+
+  const blueClean = denoise(blueMask);
+  const redClean  = denoise(redMask);
+
+  // 3) blobs (BFS)
+  function findBlobs(mask, label) {
+    const visited = new Uint8Array(mask.length);
+    const blobs = [];
+
+    const qx = new Int32Array(mask.length);
+    const qy = new Int32Array(mask.length);
+
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const idx0 = y * w + x;
+        if (!mask[idx0] || visited[idx0]) continue;
+
+        let head = 0, tail = 0;
+        qx[tail] = x; qy[tail] = y; tail++;
+        visited[idx0] = 1;
+
+        let area = 0, sumX = 0, sumY = 0;
+        let minX = x, maxX = x, minY = y, maxY = y;
+
+        while (head < tail) {
+          const cx = qx[head];
+          const cy = qy[head];
+          head++;
+
+          const idx = cy * w + cx;
+          area++;
+          sumX += cx;
+          sumY += cy;
+
+          if (cx < minX) minX = cx;
+          if (cx > maxX) maxX = cx;
+          if (cy < minY) minY = cy;
+          if (cy > maxY) maxY = cy;
+
+          const neighbors = [
+            [cx - 1, cy],
+            [cx + 1, cy],
+            [cx, cy - 1],
+            [cx, cy + 1],
+          ];
+
+          for (const [nx, ny] of neighbors) {
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+            const nidx = ny * w + nx;
+            if (mask[nidx] && !visited[nidx]) {
+              visited[nidx] = 1;
+              qx[tail] = nx; qy[tail] = ny; tail++;
+            }
+          }
+        }
+
+        if (area >= CFG.minBlobArea) {
+          blobs.push({
+            color: label,
+            area,
+            cx: sumX / area,
+            cy: sumY / area,
+            box: { minX, minY, maxX, maxY }
+          });
+        }
+      }
+    }
+    return blobs;
+  }
+
+  const blobs = findBlobs(blueClean, "blue").concat(findBlobs(redClean, "red"));
+
+  if (blobs.length === 0) {
+    S.imgSeq = [];
+    document.getElementById("imgSeq").textContent = "—";
+    alert("Não consegui detectar bolinhas azuis/vermelhas. Tente outro print mais nítido.");
+    return;
+  }
+
+  // 4) ordenar por linhas (top-down, left-right)
+  blobs.sort((a, b) => a.cy - b.cy);
+
+  const rows = [];
+  for (const b of blobs) {
+    let placed = false;
+    for (const row of rows) {
+      if (Math.abs(row.yRef - b.cy) <= CFG.rowYThreshold) {
+        row.items.push(b);
+        row.yRef = (row.yRef * (row.items.length - 1) + b.cy) / row.items.length;
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) rows.push({ yRef: b.cy, items: [b] });
+  }
+
+  for (const row of rows) row.items.sort((a, b) => a.cx - b.cx);
+  rows.sort((a, b) => a.yRef - b.yRef);
+
+  const ordered = [];
+  for (const row of rows) ordered.push(...row.items);
+
+  // 5) sequência
+  const seq = ordered.map(b => b.color);
   S.imgSeq = seq;
-  document.getElementById("imgSeq").textContent = seq.length ? seq.map(x=>x==="blue"?"A":"V").join(" ") : "—";
-  alert(seq.length ? "Sequência estimada extraída (heurística)." : "Não consegui identificar cores suficientes na imagem.");
+  document.getElementById("imgSeq").textContent = seq.map(c => (c === "blue" ? "A" : "V")).join(" ");
+
+  // 6) overlay debug
+  if (CFG.drawDebug) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(imgObj, 0, 0, w, h);
+
+    ctx.lineWidth = 2;
+    ctx.font = "14px system-ui";
+    ctx.textBaseline = "top";
+
+    ordered.forEach((b, idx) => {
+      ctx.strokeStyle = (b.color === "blue") ? "rgba(59,130,246,0.9)" : "rgba(239,68,68,0.9)";
+      ctx.fillStyle   = "rgba(0,0,0,0.6)";
+      const {minX, minY, maxX, maxY} = b.box;
+      ctx.strokeRect(minX, minY, (maxX - minX + 1), (maxY - minY + 1));
+      ctx.fillRect(minX, minY, 24, 18);
+      ctx.fillStyle = "white";
+      ctx.fillText(String(idx + 1), minX + 6, minY + 2);
+    });
+  }
+
+  alert("Sequência estimada extraída automaticamente.");
 });
 
 document.getElementById("applyImgSeq").addEventListener("click", ()=>{
