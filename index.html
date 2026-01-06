@@ -3,117 +3,104 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Caminho 6-em-6 + Padrões por Forma (A/V/E) — educacional</title>
+  <title>Caminho 6-em-6 + Padrões por Forma (A/V/E) — Educacional</title>
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 16px; background:#0b0f14; color:#e8eef6; }
-    .wrap { max-width: 1200px; margin: 0 auto; }
-    .card { background:#111826; border:1px solid #1c2a3b; border-radius:14px; padding:14px; margin:12px 0; box-shadow:0 6px 20px rgba(0,0,0,.25); }
-    h1 { font-size: 18px; margin:0 0 6px; }
-    h2 { font-size: 14px; margin:0 0 10px; color:#b9c7d9; font-weight:800; }
-    .muted { color:#9fb0c6; font-size:12px; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .tabs { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .tabbtn {
-      border:1px solid #2a3f58; background:#162235; color:#e8eef6;
-      padding:10px 12px; border-radius:12px; font-weight:800; cursor:pointer;
-    }
-    .tabbtn.active { border-color:#8ab4ff; box-shadow:0 0 0 2px rgba(138,180,255,.15) inset; }
-    button { border:1px solid #2a3f58; background:#162235; color:#e8eef6; padding:12px 14px; border-radius:12px; font-weight:900; cursor:pointer; }
-    button:hover { filter:brightness(1.08); }
-    .smallbtn { padding:10px 12px; }
-    .danger { border-color:#ff3b3b !important; }
-    .ok { border-color:#2bd46a !important; }
-    .btnA { border-color:#2b6fff; }
-    .btnV { border-color:#ff3b3b; }
-    .btnE { border-color:#ffd000; }
-    .pill { display:inline-block; padding:3px 8px; border-radius:999px; border:1px solid #2a3f58; background:#0f1725; font-size:12px; color:#cfe0f5; }
-    .sep { height:1px; background:#1c2a3b; margin:12px 0; }
-    .grid2 { display:grid; grid-template-columns:1fr; gap:10px; }
-    @media (min-width: 920px){ .grid2 { grid-template-columns: 1.2fr .8fr; } }
+    :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:16px;background:#0b0f14;color:#e8eef6}
+    .wrap{max-width:1220px;margin:0 auto}
+    .card{background:#111826;border:1px solid #1c2a3b;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+    h1{font-size:18px;margin:0 0 6px}
+    h2{font-size:14px;margin:0 0 10px;color:#b9c7d9;font-weight:900}
+    .muted{color:#9fb0c6;font-size:12px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .sep{height:1px;background:#1c2a3b;margin:12px 0}
+    .pill{display:inline-block;padding:3px 8px;border-radius:999px;border:1px solid #2a3f58;background:#0f1725;font-size:12px;color:#cfe0f5}
+    button{border:1px solid #2a3f58;background:#162235;color:#e8eef6;padding:12px 14px;border-radius:12px;font-weight:900;cursor:pointer}
+    button:hover{filter:brightness(1.08)}
+    .smallbtn{padding:10px 12px}
+    .danger{border-color:#ff3b3b!important}
+    .ok{border-color:#2bd46a!important}
+    .btnA{border-color:#2b6fff}
+    .btnV{border-color:#ff3b3b}
+    .btnE{border-color:#ffd000}
 
-    .box { background:#0f1725; border:1px solid #1c2a3b; border-radius:12px; padding:10px; }
-    .warn { border-color:#ffd000 !important; box-shadow:0 0 0 2px rgba(255,208,0,.12) inset; }
-    .good { border-color:#2bd46a !important; box-shadow:0 0 0 2px rgba(43,212,106,.10) inset; }
-    .hidden { display:none; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    input[type="number"], input[type="text"], select {
-      padding:10px; border-radius:10px; background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b;
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .tabbtn{border:1px solid #2a3f58;background:#162235;color:#e8eef6;padding:10px 12px;border-radius:12px;font-weight:900;cursor:pointer}
+    .tabbtn.active{border-color:#8ab4ff;box-shadow:0 0 0 2px rgba(138,180,255,.15) inset}
+    .hidden{display:none}
+
+    .grid2{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width: 920px){.grid2{grid-template-columns:1.2fr .8fr}}
+
+    .box{background:#0f1725;border:1px solid #1c2a3b;border-radius:12px;padding:10px}
+    .warn{border-color:#ffd000!important;box-shadow:0 0 0 2px rgba(255,208,0,.12) inset}
+    .good{border-color:#2bd46a!important;box-shadow:0 0 0 2px rgba(43,212,106,.10) inset}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+
+    input[type="number"],input[type="text"],select{
+      padding:10px;border-radius:10px;background:#0f1725;color:#e8eef6;border:1px solid #1c2a3b
     }
-    input[type="number"]{ width: 110px; }
-    input[type="text"]{ min-width: 240px; flex: 1; }
+    input[type="number"]{width:120px}
     textarea{
-      width:100%; min-height: 84px; resize: vertical;
-      background:#0f1725; color:#e8eef6; border:1px solid #1c2a3b; border-radius:12px;
-      padding:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:12px;
+      width:100%;min-height:88px;resize:vertical;background:#0f1725;color:#e8eef6;border:1px solid #1c2a3b;border-radius:12px;
+      padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:12px
     }
 
     /* Caminho 6-em-6 */
-    .roadWrap{ overflow:auto; border-radius:12px; border:1px solid #1c2a3b; }
+    .roadWrap{overflow:auto;border-radius:12px;border:1px solid #1c2a3b}
     .road{
-      display:grid;
-      grid-auto-flow: column;
-      grid-auto-columns: 26px;
-      grid-template-rows: repeat(6, 26px);
-      gap: 3px;
-      padding: 10px;
-      background:#0b1320;
-      min-height: 210px;
+      display:grid;grid-auto-flow:column;grid-auto-columns:26px;grid-template-rows:repeat(6,26px);
+      gap:3px;padding:10px;background:#0b1320;min-height:210px
     }
     .cell{
-      width:26px; height:26px; border-radius:999px;
-      border:1px solid #1c2a3b; background:#0f1725;
-      display:flex; align-items:center; justify-content:center;
-      font-size:11px; font-weight:900; color:#cfe0f5;
-      user-select:none;
+      width:26px;height:26px;border-radius:999px;border:1px solid #1c2a3b;background:#0f1725;
+      display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#cfe0f5;user-select:none
     }
-    .A{ background:#113a7a; border-color:#2b6fff; }
-    .V{ background:#7a1111; border-color:#ff3b3b; }
-    .E{ background:#6a5a12; border-color:#ffd000; }
+    .A{background:#113a7a;border-color:#2b6fff}
+    .V{background:#7a1111;border-color:#ff3b3b}
+    .E{background:#6a5a12;border-color:#ffd000}
 
-    /* Editor de padrão (mini-grid W x 6) */
-    .miniWrap{ overflow:auto; border-radius:12px; border:1px solid #1c2a3b; }
+    /* Preview de padrão */
+    .patRow{display:grid;grid-template-columns:1fr;gap:8px}
+    .patCard{border:1px solid #1c2a3b;background:#0b1320;border-radius:12px;padding:10px}
+    .patTop{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .patName{font-weight:900}
+    .patMeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .miniWrap{overflow:auto;border-radius:12px;border:1px solid #1c2a3b;margin-top:8px}
     .miniGrid{
-      display:grid;
-      grid-template-rows: repeat(6, 30px);
-      gap: 4px;
-      padding: 10px;
-      background:#0b1320;
+      display:grid;grid-template-rows:repeat(6,16px);gap:3px;padding:8px;background:#0f1725
     }
     .miniCell{
-      width:30px; height:30px; border-radius:10px;
-      border:1px solid #1c2a3b; background:#0f1725;
-      display:flex; align-items:center; justify-content:center;
-      font-size:12px; font-weight:900; color:#cfe0f5;
-      cursor:pointer;
+      width:16px;height:16px;border-radius:5px;border:1px solid #1c2a3b;background:#0b1320;
+      display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#cfe0f5
     }
-    .tagNone{ opacity:.55; }
-    .tag1{ border-color:#8ab4ff; box-shadow:0 0 0 2px rgba(138,180,255,.15) inset; }
-    .tag2{ border-color:#ff8a8a; box-shadow:0 0 0 2px rgba(255,138,138,.12) inset; }
-    .tag3{ border-color:#ffd000; box-shadow:0 0 0 2px rgba(255,208,0,.12) inset; }
-    .tagA{ border-color:#2b6fff; }
-    .tagV{ border-color:#ff3b3b; }
-    .tagE{ border-color:#ffd000; }
+    .mk1{border-color:#8ab4ff;box-shadow:0 0 0 2px rgba(138,180,255,.10) inset}
+    .mk2{border-color:#ff8a8a;box-shadow:0 0 0 2px rgba(255,138,138,.08) inset}
+    .mk3{border-color:#ffd000;box-shadow:0 0 0 2px rgba(255,208,0,.10) inset}
+    .mkA{border-color:#2b6fff}
+    .mkV{border-color:#ff3b3b}
+    .mkE{border-color:#ffd000}
 
-    table{ width:100%; border-collapse:collapse; }
-    th,td{ border-bottom:1px solid #1c2a3b; padding:10px; text-align:left; font-size:12px; }
-    th{ background:#0f1725; position:sticky; top:0; color:#b9c7d9; font-weight:900; }
-    .right{ text-align:right; }
+    /* Tabela */
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #1c2a3b;padding:10px;text-align:left;font-size:12px}
+    th{background:#0f1725;position:sticky;top:0;color:#b9c7d9;font-weight:900}
+    .right{text-align:right}
   </style>
 </head>
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>Caminho 6-em-6 + Padrões por Forma (A/V/E) — educacional</h1>
+    <h1>Caminho 6-em-6 + Padrões por Forma (A/V/E) — Educacional</h1>
     <div class="muted">
-      Sequenciamento do caminho: preenche <b>6 linhas por coluna</b> (em ordem temporal). Se mudar de cor, <b>continua na mesma coluna</b> até completar 6. Empate (E) entra como cor normal.
+      Regra do caminho: resultado i vai para <b>col=⌊i/6⌋</b>, <b>row=i%6</b>. Empate (E) entra como cor normal.
+      Quando um padrão aparece, o sistema mostra apenas <b>detecção</b> e <b>estatística do histórico</b> (sem sugerir cor).
     </div>
     <div class="sep"></div>
     <div class="tabs">
       <button class="tabbtn active" id="tabAnalise">Análise</button>
       <button class="tabbtn" id="tabPadroes">Padrões</button>
-      <button class="tabbtn" id="tabRel">Acompanhamento</button>
+      <button class="tabbtn" id="tabAcomp">Acompanhamento</button>
       <span class="pill" id="pillSave">Dados locais: ok</span>
     </div>
   </div>
@@ -133,7 +120,7 @@
 
       <div class="grid2">
         <div class="box">
-          <div class="muted">Caminho (6 linhas) — col = ⌊i/6⌋, row = i%6</div>
+          <div class="muted">Caminho (6 linhas)</div>
           <div class="roadWrap" style="margin-top:10px;">
             <div class="road" id="road"></div>
           </div>
@@ -143,11 +130,11 @@
         </div>
 
         <div class="box warn" id="alertBox" style="display:none;">
-          <div class="muted">Padrão por forma detectado (educacional)</div>
-          <div style="font-weight:900; font-size:16px;" id="alertTitle">—</div>
+          <div class="muted">Padrões detectados (educacional)</div>
+          <div style="font-weight:900;font-size:16px;" id="alertTitle">—</div>
           <div class="muted" id="alertMsg">—</div>
           <div class="sep"></div>
-          <div class="muted">Top 5 padrões ativos (mín. ocorrências: <b><span id="minOccShow">2</span></b>)</div>
+          <div class="muted">Top 5 (mín. ocorrências: <b><span id="minOccShow">2</span></b>)</div>
           <div id="rankBox"></div>
         </div>
       </div>
@@ -157,20 +144,16 @@
       <div class="row">
         <label class="muted">Mín. ocorrências p/ aparecer:</label>
         <input type="number" id="minOccInput" min="1" max="999" value="2"/>
-        <label class="muted">Detectar no:</label>
+        <label class="muted">Detectar:</label>
         <select id="scopeSel">
-          <option value="last">Somente no final (janela terminando no último bloco)</option>
+          <option value="last">Somente no final (janela terminando na última coluna)</option>
           <option value="any">Em qualquer posição do caminho</option>
         </select>
         <button class="smallbtn ok" id="applyCfg">Aplicar</button>
 
         <button class="smallbtn" id="undoBtn">Desfazer</button>
         <button class="smallbtn" id="exportBtn">Exportar CSV</button>
-        <button class="smallbtn danger" id="resetBtn">Reset (zera sequência)</button>
-      </div>
-
-      <div class="muted" style="margin-top:10px;">
-        Observação: o sistema registra quando a forma aparece e mostra o que ocorreu depois <b>no seu próprio histórico</b> (estatística descritiva).
+        <button class="smallbtn danger" id="resetSeqBtn">Reset sequência</button>
       </div>
     </div>
 
@@ -188,104 +171,55 @@
   <!-- ===================== PADRÕES ===================== -->
   <div id="viewPadroes" class="hidden">
     <div class="card">
-      <h2>Editor de padrão por forma (janela W colunas × 6 linhas)</h2>
+      <h2>Padrões pré-salvos</h2>
       <div class="muted">
-        Clique nas células para marcar o que importa no padrão. Você pode marcar:
-        <b>1, 2, 3</b> = “grupos” (mesmo número = mesma cor) ou <b>A/V/E</b> = cor fixa.
-        Célula vazia = ignorar.
+        -[inferência] Estes padrões foram pré-mapeados como formas em janela W×6. Você pode ativar/desativar cada padrão.
+        Backup: exportar/importar JSON.
       </div>
-
       <div class="sep"></div>
 
       <div class="row">
-        <label class="muted">Largura W (colunas):</label>
-        <input type="number" id="wInput" min="1" max="12" value="2"/>
-        <label class="muted">Modo de clique:</label>
-        <select id="clickMode">
-          <option value="">(apagar)</option>
-          <option value="1">Grupo 1</option>
-          <option value="2">Grupo 2</option>
-          <option value="3">Grupo 3</option>
-          <option value="A">Cor fixa A</option>
-          <option value="V">Cor fixa V</option>
-          <option value="E">Cor fixa E</option>
-        </select>
-        <label class="muted">Exigir grupos diferentes:</label>
-        <select id="enforceDiff">
-          <option value="yes">Sim (1,2,3 devem ser cores diferentes)</option>
-          <option value="no">Não (só garante igualdade dentro do grupo)</option>
-        </select>
-        <button class="smallbtn ok" id="buildMiniBtn">Aplicar W</button>
+        <button class="smallbtn" id="enableAllBtn">Ativar todos</button>
+        <button class="smallbtn" id="disableAllBtn">Desativar todos</button>
+        <button class="smallbtn" id="exportPatternsBtn">Exportar JSON</button>
+        <button class="smallbtn" id="importPatternsBtn">Importar JSON</button>
+        <button class="smallbtn danger" id="resetPatternsBtn">Resetar padrões</button>
       </div>
+      <textarea id="patternsJsonBox" placeholder="Cole JSON aqui para importar"></textarea>
 
       <div class="sep"></div>
-
-      <div class="grid2">
-        <div class="box">
-          <div class="muted">Desenhe aqui (W×6)</div>
-          <div class="miniWrap" style="margin-top:10px;">
-            <div class="miniGrid" id="miniGrid"></div>
-          </div>
-          <div class="muted" style="margin-top:10px;">
-            Dica: “2×2” = use W=2 e marque 4 células com grupos (ex.: 1 e 2) conforme a forma.
-          </div>
-        </div>
-
-        <div class="box good">
-          <div class="muted">Salvar padrão</div>
-          <div class="row" style="margin-top:10px;">
-            <input type="text" id="patName" placeholder="Nome do padrão (ex.: Escadinha)"/>
-          </div>
-          <div class="row" style="margin-top:10px;">
-            <button class="smallbtn ok" id="savePatBtn">Salvar</button>
-            <button class="smallbtn" id="clearMiniBtn">Limpar desenho</button>
-            <span class="pill" id="patPill">—</span>
-          </div>
-
-          <div class="sep"></div>
-          <div class="muted">
-            Exportar/importar padrões (JSON) para backup.
-          </div>
-          <div class="row" style="margin-top:10px;">
-            <button class="smallbtn" id="exportPatternsBtn">Exportar JSON</button>
-            <button class="smallbtn" id="importPatternsBtn">Importar JSON</button>
-            <button class="smallbtn danger" id="resetPatternsBtn">Resetar padrões</button>
-          </div>
-          <textarea id="patternsJsonBox" placeholder='Cole JSON aqui para importar'></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Banco de padrões</h2>
-      <div class="muted">Os padrões abaixo serão detectados na sequência do caminho (6-em-6).</div>
-      <div class="sep"></div>
-      <div style="max-height: 520px; overflow:auto; border-radius:12px; border:1px solid #1c2a3b;">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>W</th>
-              <th>Regras</th>
-              <th class="right">Ocorrências</th>
-              <th class="right">Depois (mais comum)</th>
-              <th class="right">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="patTable"></tbody>
-        </table>
-      </div>
+      <div id="patternsList" class="patRow"></div>
     </div>
   </div>
 
-  <!-- ===================== RELATÓRIO ===================== -->
-  <div id="viewRel" class="hidden">
+  <!-- ===================== ACOMPANHAMENTO ===================== -->
+  <div id="viewAcomp" class="hidden">
     <div class="card">
       <h2>Acompanhamento</h2>
       <div class="muted">
-        Para cada padrão: quantas vezes apareceu e o que ocorreu depois no seu histórico (A/V/E).
-        “Depois” = primeiro item da coluna seguinte ao final da janela (índice = (startCol+W)*6).
+        “Depois” = primeiro item após o fim da janela (índice = (startCol+W)*6). Tabela mostra ocorrências e distribuição A/V/E após o padrão.
       </div>
+      <div class="sep"></div>
+
+      <div style="max-height:520px;overflow:auto;border-radius:12px;border:1px solid #1c2a3b;">
+        <table>
+          <thead>
+            <tr>
+              <th>Padrão</th>
+              <th>W</th>
+              <th>Escopo</th>
+              <th class="right">Ocorrências</th>
+              <th class="right">Depois A</th>
+              <th class="right">Depois V</th>
+              <th class="right">Depois E</th>
+              <th class="right">Mais comum</th>
+              <th class="right">Última posição</th>
+            </tr>
+          </thead>
+          <tbody id="acompBody"></tbody>
+        </table>
+      </div>
+
       <div class="sep"></div>
       <textarea id="reportBox" readonly></textarea>
     </div>
@@ -294,7 +228,7 @@
 
 <script>
 (() => {
-  const KEY = "CAMINHO_6_EM_6_PADROES_V1";
+  const KEY = "CAMINHO_6_EM_6_PRESETS_V2";
   const CORES = ["A","V","E"];
 
   // Config
@@ -303,41 +237,20 @@
 
   // Estado
   let seq = [];
-  let patterns = []; // {id,nome,W,mask,enforceDifferent}
-  let stats = {};    // id -> {occ, nextCounts{A,V,E}}
-
-  // Editor (mini-grid)
-  let W = 2;
-  let miniMask = []; // length W*6, values: "", "1","2","3","A","V","E"
-  let enforceDifferent = true;
+  let patterns = []; // {id,nome,W,mask,enforceDifferent,enabled}
+  let stats = {};    // id -> {occ, nextCounts{A,V,E}, lastPos}
 
   const $ = (id) => document.getElementById(id);
+  const clampInt = (n,a,b) => {
+    n = Math.floor(Number(n));
+    if (!Number.isFinite(n)) return a;
+    return Math.max(a, Math.min(b, n));
+  };
+  const escapeHtml = (s) => String(s)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
   function uid(){ return "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,7); }
-
-  function save(){
-    localStorage.setItem(KEY, JSON.stringify({
-      MIN_OCC, SCOPE, seq, patterns,
-      editor: { W, miniMask, enforceDifferent }
-    }));
-  }
-
-  function load(){
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return;
-    try {
-      const data = JSON.parse(raw);
-      if (typeof data.MIN_OCC === "number") MIN_OCC = Math.max(1, Math.floor(data.MIN_OCC));
-      if (data.SCOPE === "any" || data.SCOPE === "last") SCOPE = data.SCOPE;
-      if (Array.isArray(data.seq)) seq = data.seq.filter(x => CORES.includes(x));
-      if (Array.isArray(data.patterns)) patterns = normalizePatterns(data.patterns);
-      if (data.editor && typeof data.editor.W === "number") W = clampInt(data.editor.W, 1, 12);
-      if (data.editor && Array.isArray(data.editor.miniMask)) miniMask = normalizeMask(data.editor.miniMask, W);
-      if (data.editor && typeof data.editor.enforceDifferent === "boolean") enforceDifferent = data.editor.enforceDifferent;
-    } catch {}
-  }
-
-  function clampInt(n, a, b){ n = Math.floor(Number(n)); if (!Number.isFinite(n)) return a; return Math.max(a, Math.min(b, n)); }
 
   function normalizeMask(arr, w){
     const allowed = new Set(["","1","2","3","A","V","E"]);
@@ -358,19 +271,37 @@
       const id = String(p.id||"").trim() || uid();
       if (seen.has(id)) continue;
       const nome = String(p.nome||id).trim();
-      const Wp = clampInt(p.W, 1, 12);
+      const Wp = clampInt(p.W, 1, 6);
       const mask = normalizeMask(Array.isArray(p.mask)?p.mask:[], Wp);
-      const enforce = !!p.enforceDifferent;
-      // precisa ter ao menos 1 célula marcada
+      const enforceDifferent = !!p.enforceDifferent;
+      const enabled = (p.enabled === false) ? false : true;
       if (!mask.some(x => x !== "")) continue;
-      out.push({id, nome, W:Wp, mask, enforceDifferent:enforce});
+      out.push({id, nome, W:Wp, mask, enforceDifferent, enabled});
       seen.add(id);
     }
     return out;
   }
 
-  // ===== Caminho 6-em-6: col=floor(i/6), row=i%6 =====
-  function getCellColor(col, row){
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify({MIN_OCC,SCOPE,seq,patterns}));
+    $("pillSave").textContent = "Dados locais: ok";
+  }
+
+  function load(){
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return false;
+    try{
+      const data = JSON.parse(raw);
+      if (typeof data.MIN_OCC === "number") MIN_OCC = Math.max(1, Math.floor(data.MIN_OCC));
+      if (data.SCOPE === "any" || data.SCOPE === "last") SCOPE = data.SCOPE;
+      if (Array.isArray(data.seq)) seq = data.seq.filter(x => CORES.includes(x));
+      if (Array.isArray(data.patterns)) patterns = normalizePatterns(data.patterns);
+      return true;
+    }catch{ return false; }
+  }
+
+  // ===== Caminho 6-em-6 =====
+  function getCellColor(col,row){
     const idx = col*6 + row;
     if (idx < 0 || idx >= seq.length) return null;
     return seq[idx];
@@ -385,7 +316,7 @@
       cells.push({col,row,cor});
     }
     const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
-    return {cells, maxCol};
+    return {cells,maxCol};
   }
 
   function renderRoad(){
@@ -407,25 +338,13 @@
     }
   }
 
-  function escapeHtml(s){
-    return String(s)
-      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  }
-
-  // ===== Matching por máscara (forma) =====
-  // mask values:
-  // "" ignore
-  // "A","V","E" fixed color
-  // "1","2","3" groups (mesmo grupo = mesma cor)
-  function matchPatternAtStartCol(pat, startCol){
+  // ===== Matching por máscara =====
+  // mask values: "" ignore | A/V/E fixed | 1/2/3 groups (igual dentro do grupo)
+  function matchPatternAt(pat, startCol){
     const Wp = pat.W;
-    const groups = {}; // "1"->color, etc.
-    const seenGroupColors = new Set();
-
-    // coletar grupos usados
+    const groups = {}; // g -> cor
     const usedGroups = new Set();
-    for (const v of pat.mask) if (v === "1" || v === "2" || v === "3") usedGroups.add(v);
+    for (const v of pat.mask) if (v==="1"||v==="2"||v==="3") usedGroups.add(v);
 
     for (let dx=0; dx<Wp; dx++){
       for (let row=0; row<6; row++){
@@ -434,27 +353,20 @@
 
         const col = startCol + dx;
         const cor = getCellColor(col, row);
-        if (!cor) return false; // célula marcada precisa existir no histórico
+        if (!cor) return false;
 
-        if (v === "A" || v === "V" || v === "E") {
+        if (v==="A"||v==="V"||v==="E"){
           if (cor !== v) return false;
           continue;
         }
-
-        if (v === "1" || v === "2" || v === "3") {
-          if (!groups[v]) {
-            groups[v] = cor;
-            seenGroupColors.add(cor);
-          } else {
-            if (groups[v] !== cor) return false;
-          }
+        if (v==="1"||v==="2"||v==="3"){
+          if (!groups[v]) groups[v] = cor;
+          else if (groups[v] !== cor) return false;
         }
       }
     }
 
-    if (pat.enforceDifferent && usedGroups.size > 1) {
-      // grupos diferentes precisam ser cores diferentes
-      // ex.: se 1=V e 2=V => falha
+    if (pat.enforceDifferent && usedGroups.size > 1){
       const vals = [];
       for (const g of usedGroups) if (groups[g]) vals.push(groups[g]);
       const uniq = new Set(vals);
@@ -463,86 +375,92 @@
     return true;
   }
 
-  // “Depois” = primeiro item da coluna seguinte ao fim da janela: idxNext = (startCol+W)*6
   function nextAfterWindow(startCol, Wp){
-    const idx = (startCol + Wp) * 6;
-    return (idx >= 0 && idx < seq.length) ? seq[idx] : null;
+    const idx = (startCol + Wp) * 6; // primeiro da coluna seguinte ao fim da janela
+    if (idx >= 0 && idx < seq.length) return seq[idx];
+    return null;
+  }
+
+  function mostCommonNext(nextCounts){
+    let best = "—", bestV = -1;
+    for (const c of CORES){
+      const v = nextCounts[c] || 0;
+      if (v > bestV){ bestV=v; best=c; }
+    }
+    return bestV <= 0 ? "—" : best;
   }
 
   function rebuildStats(){
     stats = {};
-    for (const p of patterns) stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}};
+    for (const p of patterns){
+      stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}, lastPos:"—"};
+    }
 
     const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
     if (maxCol < 0) return;
 
     for (const p of patterns){
+      if (!p.enabled) continue;
       const Wp = p.W;
       for (let start=0; start<=maxCol; start++){
-        // janela precisa caber
         if (start + Wp - 1 > maxCol) break;
-
-        if (!matchPatternAtStartCol(p, start)) continue;
+        if (!matchPatternAt(p, start)) continue;
 
         const st = stats[p.id];
         st.occ += 1;
-
+        st.lastPos = `col ${start+1}`;
         const nxt = nextAfterWindow(start, Wp);
         if (nxt) st.nextCounts[nxt] = (st.nextCounts[nxt]||0) + 1;
       }
     }
   }
 
-  function mostCommonNext(nextCounts){
-    let best = null, bestV = -1;
-    for (const c of CORES){
-      const v = nextCounts[c] || 0;
-      if (v > bestV) { bestV = v; best = c; }
-    }
-    return bestV <= 0 ? "—" : best;
-  }
-
-  // Detectar “ativo agora”
   function activeMatches(){
-    const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
     const hits = [];
+    const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
     if (maxCol < 0) return hits;
 
     for (const p of patterns){
+      if (!p.enabled) continue;
       const Wp = p.W;
-      if (SCOPE === "last") {
+
+      if (SCOPE === "last"){
         const start = maxCol - Wp + 1;
         if (start < 0) continue;
-        if (matchPatternAtStartCol(p, start)) {
-          const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+        if (matchPatternAt(p, start)){
+          const st = stats[p.id];
           if (st.occ >= MIN_OCC) hits.push({p, st, start});
         }
       } else {
-        // any
         for (let start=0; start<=maxCol; start++){
           if (start + Wp - 1 > maxCol) break;
-          if (matchPatternAtStartCol(p, start)) {
-            const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+          if (matchPatternAt(p, start)){
+            const st = stats[p.id];
             if (st.occ >= MIN_OCC) hits.push({p, st, start});
           }
         }
       }
     }
 
-    // ranking: mais ocorrências primeiro
     hits.sort((a,b) => (b.st.occ - a.st.occ));
     return hits;
   }
 
   function renderAlert(){
     $("minOccShow").textContent = String(MIN_OCC);
-
     const alertBox = $("alertBox");
+    const status = $("statusPill");
     const hits = activeMatches();
 
-    if (!hits.length) {
+    if (!seq.length){
       alertBox.style.display = "none";
-      $("statusPill").textContent = seq.length ? "Sem padrão ativo (com mínimo de ocorrências)" : "Aguardando…";
+      status.textContent = "Aguardando…";
+      return;
+    }
+
+    if (!hits.length){
+      alertBox.style.display = "none";
+      status.textContent = "Sem padrão ativo (com mínimo de ocorrências)";
       return;
     }
 
@@ -552,7 +470,7 @@
 
     $("alertTitle").textContent = top.p.nome;
     $("alertMsg").textContent =
-      `Janela W=${top.p.W} encontrada na posição startCol=${top.start}. ` +
+      `Detectado em startCol=${top.start} (coluna ${top.start+1}). ` +
       `Ocorrências no histórico: ${top.st.occ}. ` +
       `Depois (mais comum no seu histórico): ${mc}.`;
 
@@ -567,52 +485,114 @@
       rank.appendChild(div);
     });
 
-    $("statusPill").textContent = "Padrão ativo detectado (educacional)";
+    status.textContent = "Padrão detectado (educacional)";
   }
 
-  function renderPatternsTable(){
-    const tbody = $("patTable");
-    tbody.innerHTML = "";
+  function renderAcompanhamento(){
+    const body = $("acompBody");
+    body.innerHTML = "";
+
+    const lines = [];
+    lines.push(`MIN_OCC=${MIN_OCC} | SCOPE=${SCOPE} | Total resultados=${seq.length} | Padrões ativos=${patterns.filter(p=>p.enabled).length}`);
+    lines.push(`Regra do caminho: col=floor(i/6), row=i%6 (E entra como cor normal)`);
+    lines.push(`--------------------------------------------------`);
+
     for (const p of patterns){
-      const st = stats[p.id] || {occ:0, nextCounts:{A:0,V:0,E:0}};
+      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0},lastPos:"—"};
       const mc = mostCommonNext(st.nextCounts);
-      const rules = `W=${p.W} | ${p.enforceDifferent ? "grupos diferentes" : "grupos livres"}`;
+      const scopeTxt = (SCOPE === "last") ? "final" : "qualquer";
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${escapeHtml(p.nome)}</td>
+        <td>${escapeHtml(p.nome)} ${p.enabled ? "" : "<span class='pill'>desativado</span>"}</td>
         <td>${p.W}</td>
-        <td>${escapeHtml(rules)}</td>
-        <td class="right">${st.occ}</td>
-        <td class="right">${mc}</td>
-        <td class="right">
-          <button class="smallbtn danger" data-del="${escapeHtml(p.id)}">Excluir</button>
-        </td>
+        <td>${scopeTxt}</td>
+        <td class="right">${p.enabled ? st.occ : "—"}</td>
+        <td class="right">${p.enabled ? (st.nextCounts.A||0) : "—"}</td>
+        <td class="right">${p.enabled ? (st.nextCounts.V||0) : "—"}</td>
+        <td class="right">${p.enabled ? (st.nextCounts.E||0) : "—"}</td>
+        <td class="right">${p.enabled ? mc : "—"}</td>
+        <td class="right">${p.enabled ? st.lastPos : "—"}</td>
       `;
-      tbody.appendChild(tr);
+      body.appendChild(tr);
+
+      if (p.enabled && st.occ > 0){
+        lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0} | mais comum=${mc}`);
+      }
     }
-    tbody.onclick = (ev) => {
-      const btn = ev.target.closest("button");
-      if (!btn) return;
-      const id = btn.getAttribute("data-del");
+
+    $("reportBox").value = lines.join("\n");
+  }
+
+  function mkClass(val){
+    if (!val) return "";
+    if (val==="1") return "mk1";
+    if (val==="2") return "mk2";
+    if (val==="3") return "mk3";
+    if (val==="A") return "mkA";
+    if (val==="V") return "mkV";
+    if (val==="E") return "mkE";
+    return "";
+  }
+
+  function renderPatternsList(){
+    const list = $("patternsList");
+    list.innerHTML = "";
+
+    patterns.forEach((p) => {
+      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0}};
+      const mc = mostCommonNext(st.nextCounts);
+
+      const card = document.createElement("div");
+      card.className = "patCard";
+      card.innerHTML = `
+        <div class="patTop">
+          <div>
+            <div class="patName">${escapeHtml(p.nome)}</div>
+            <div class="muted">W=${p.W} | grupos ${p.enforceDifferent ? "diferentes" : "livres"}</div>
+          </div>
+          <div class="patMeta">
+            <label class="pill">
+              <input type="checkbox" data-toggle="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""} />
+              ativo
+            </label>
+            <span class="pill">occ: ${p.enabled ? (st.occ||0) : "—"}</span>
+            <span class="pill">depois≈ ${p.enabled ? mc : "—"}</span>
+          </div>
+        </div>
+
+        <div class="miniWrap">
+          <div class="miniGrid" style="grid-template-columns:repeat(${p.W},16px)">
+            ${renderMiniHTML(p)}
+          </div>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    list.addEventListener("change", (ev) => {
+      const cb = ev.target;
+      if (!cb || !cb.getAttribute) return;
+      const id = cb.getAttribute("data-toggle");
       if (!id) return;
-      patterns = patterns.filter(x => x.id !== id);
+      const idx = patterns.findIndex(x => x.id === id);
+      if (idx < 0) return;
+      patterns[idx].enabled = !!cb.checked;
       save();
       rebuildStats();
       updateAll();
-    };
+    }, { once:false });
   }
 
-  function renderReport(){
-    const lines = [];
-    lines.push(`MIN_OCC=${MIN_OCC} | SCOPE=${SCOPE} | Total resultados=${seq.length} | Total padrões=${patterns.length}`);
-    lines.push(`Sequenciamento: col=floor(i/6), row=i%6 (E entra normal)`);
-    lines.push(`--------------------------------------------------`);
-    for (const p of patterns){
-      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0}};
-      if (st.occ <= 0) continue;
-      lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0}`);
+  function renderMiniHTML(p){
+    const html = [];
+    for (let dx=0; dx<p.W; dx++){
+      for (let row=0; row<6; row++){
+        const val = p.mask[dx*6 + row] || "";
+        const cls = mkClass(val);
+        html.push(`<div class="miniCell ${cls}">${val ? escapeHtml(val) : "·"}</div>`);
+      }
     }
-    $("reportBox").value = lines.join("\n");
+    return html.join("");
   }
 
   function updateAll(){
@@ -620,10 +600,10 @@
     $("seqText").textContent = seq.length ? seq.join(" ") : "—";
     $("seqCount").textContent = String(seq.length);
     rebuildStats();
-    renderPatternsTable();
-    renderReport();
     renderAlert();
-    $("pillSave").textContent = "Dados locais: ok";
+    renderPatternsList();
+    renderAcompanhamento();
+    save();
   }
 
   // ===== Import/Export =====
@@ -642,71 +622,137 @@
     URL.revokeObjectURL(url);
   }
 
-  // ===== Tabs =====
+  // ===== Presets =====
+  // -[inferência] Máscaras aproximadas para representar “formas” mostradas nas imagens em uma janela W×6.
+  // Convenção: mask index = dx*6 + row (row 0 topo -> 5 base).
+  function presets(){
+    const out = [];
+
+    // Helpers
+    const empty = (W) => Array(W*6).fill("");
+    const set = (mask, dx, row, val) => { mask[dx*6 + row] = val; };
+
+    // 2x1 (vertical 2 na mesma coluna + 1 na coluna ao lado no topo)
+    // Forma L pequena.
+    {
+      const W = 2; const m = empty(W);
+      set(m,0,0,"1"); set(m,0,1,"1");
+      set(m,1,0,"2");
+      out.push({id:uid(), nome:"Padrão 2×1 (L pequeno)", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // 2x2 (bloco 2x2 com duas cores em pares)
+    {
+      const W = 2; const m = empty(W);
+      set(m,0,0,"1"); set(m,0,1,"1");
+      set(m,1,0,"2"); set(m,1,1,"2");
+      out.push({id:uid(), nome:"Padrão 2×2 (bloco)", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // Escadinha (3 colunas, descendo em degraus)
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"1");
+      set(m,1,0,"2"); set(m,1,1,"2");
+      set(m,2,0,"1"); set(m,2,1,"1"); set(m,2,2,"1");
+      out.push({id:uid(), nome:"Padrão Escadinha", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // Escadinha invertida
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"1"); set(m,0,1,"1"); set(m,0,2,"1");
+      set(m,1,0,"2"); set(m,1,1,"2");
+      set(m,2,0,"1");
+      out.push({id:uid(), nome:"Padrão Escadinha Invertida", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // Alternância (coluna com 4 iguais + topo da coluna seguinte diferente) — aproximação
+    {
+      const W = 2; const m = empty(W);
+      set(m,0,0,"1"); set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1");
+      set(m,1,0,"2");
+      out.push({id:uid(), nome:"Padrão de Alternância", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // Alternância 2 (linha superior alternando em 6 passos: 1-2-1-2-1-2) — em 6 colunas no topo
+    {
+      const W = 6; const m = empty(W);
+      set(m,0,0,"1");
+      set(m,1,0,"2");
+      set(m,2,0,"1");
+      set(m,3,0,"2");
+      set(m,4,0,"1");
+      set(m,5,0,"2");
+      out.push({id:uid(), nome:"Padrão de Alternância 2 (topo alternado)", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // Quebra da segunda linha após “surf” (aproximação): 4 na coluna 1 + 2 na coluna 2 e 1 no topo col 3
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"1"); set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1");
+      set(m,1,0,"2"); set(m,1,1,"2");
+      set(m,2,0,"1");
+      out.push({id:uid(), nome:"Quebra 2ª linha após surf (aprox.)", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    // ===== Padrões de empate (E) =====
+    // Empate consecutivo vertical (E em duas linhas na mesma coluna)
+    {
+      const W = 1; const m = empty(W);
+      set(m,0,0,"E"); set(m,0,1,"E");
+      out.push({id:uid(), nome:"Empate consecutivo (vertical)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
+
+    // Empate na horizontal (E E no topo, duas colunas)
+    {
+      const W = 2; const m = empty(W);
+      set(m,0,0,"E"); set(m,1,0,"E");
+      out.push({id:uid(), nome:"Empate na horizontal (2)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
+
+    // Empate alternado vertical (E ? E na mesma coluna — aqui usando E em row 0 e row 2, ignorando row1)
+    {
+      const W = 1; const m = empty(W);
+      set(m,0,0,"E"); set(m,0,2,"E");
+      out.push({id:uid(), nome:"Empate alternado (vertical)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
+
+    // Alternado na horizontal (E-X-E no topo em 3 colunas, com X como grupo 1)
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"E"); set(m,1,0,"1"); set(m,2,0,"E");
+      out.push({id:uid(), nome:"Empate alternado na horizontal (E-?-E)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
+
+    // Empate na horizontal “2×3” (aprox. do desenho): topo E-?-E e embaixo ?-E-?
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"E"); set(m,1,0,"1"); set(m,2,0,"E");
+      set(m,0,1,"2"); set(m,1,1,"E"); set(m,2,1,"3");
+      out.push({id:uid(), nome:"Empate em bloco (2×3) (aprox.)", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+
+    return out;
+  }
+
+  // ===== UI Tabs =====
   function setTab(which){
-    $("tabAnalise").classList.remove("active");
-    $("tabPadroes").classList.remove("active");
-    $("tabRel").classList.remove("active");
-    $("viewAnalise").classList.add("hidden");
-    $("viewPadroes").classList.add("hidden");
-    $("viewRel").classList.add("hidden");
+    ["tabAnalise","tabPadroes","tabAcomp"].forEach(id => $(id).classList.remove("active"));
+    ["viewAnalise","viewPadroes","viewAcomp"].forEach(id => $(id).classList.add("hidden"));
 
-    if (which === "analise"){
-      $("tabAnalise").classList.add("active");
-      $("viewAnalise").classList.remove("hidden");
-    } else if (which === "padroes"){
-      $("tabPadroes").classList.add("active");
-      $("viewPadroes").classList.remove("hidden");
-      renderMiniGrid();
-    } else {
-      $("tabRel").classList.add("active");
-      $("viewRel").classList.remove("hidden");
-    }
+    if (which === "analise"){ $("tabAnalise").classList.add("active"); $("viewAnalise").classList.remove("hidden"); }
+    if (which === "padroes"){ $("tabPadroes").classList.add("active"); $("viewPadroes").classList.remove("hidden"); }
+    if (which === "acomp"){ $("tabAcomp").classList.add("active"); $("viewAcomp").classList.remove("hidden"); }
   }
 
-  // ===== Editor mini-grid =====
-  function renderMiniGrid(){
-    const grid = $("miniGrid");
-    grid.innerHTML = "";
-    grid.style.gridTemplateColumns = `repeat(${W}, 30px)`;
-    if (!miniMask || miniMask.length !== W*6) miniMask = Array(W*6).fill("");
+  $("tabAnalise").addEventListener("click", () => setTab("analise"));
+  $("tabPadroes").addEventListener("click", () => setTab("padroes"));
+  $("tabAcomp").addEventListener("click", () => setTab("acomp"));
 
-    // desenha colunas (dx 0..W-1), linhas 0..5
-    for (let dx=0; dx<W; dx++){
-      for (let row=0; row<6; row++){
-        const idx = dx*6 + row;
-        const val = miniMask[idx] || "";
-        const div = document.createElement("div");
-        div.className = "miniCell " + classForTag(val);
-        div.textContent = val ? val : "·";
-        div.title = `col+${dx}, row ${row+1}`;
-        div.addEventListener("click", () => {
-          const mode = $("clickMode").value; // "" | 1 | 2 | 3 | A | V | E
-          miniMask[idx] = String(mode || "").toUpperCase();
-          div.className = "miniCell " + classForTag(miniMask[idx]);
-          div.textContent = miniMask[idx] ? miniMask[idx] : "·";
-          save();
-        });
-        grid.appendChild(div);
-      }
-    }
-  }
-
-  function classForTag(val){
-    if (!val) return "tagNone";
-    if (val === "1") return "tag1";
-    if (val === "2") return "tag2";
-    if (val === "3") return "tag3";
-    if (val === "A") return "tagA";
-    if (val === "V") return "tagV";
-    if (val === "E") return "tagE";
-    return "tagNone";
-  }
-
-  // ===== Actions =====
+  // ===== Buttons =====
   function add(c){
     seq.push(c);
-    save();
     updateAll();
   }
 
@@ -717,15 +763,13 @@
   $("undoBtn").addEventListener("click", () => {
     if (!seq.length) return;
     seq.pop();
-    save();
     updateAll();
   });
 
-  $("resetBtn").addEventListener("click", () => {
+  $("resetSeqBtn").addEventListener("click", () => {
     const ok = confirm("Zerar somente a sequência (mantendo padrões)?");
     if (!ok) return;
     seq = [];
-    save();
     updateAll();
   });
 
@@ -737,10 +781,9 @@
 
   $("importBtn").addEventListener("click", () => {
     const parsed = parseSeq($("importBox").value);
-    if (!parsed.length) { alert("Não encontrei A/V/E no texto."); return; }
+    if (!parsed.length){ alert("Não encontrei A/V/E no texto."); return; }
     seq = seq.concat(parsed);
     $("importBox").value = "";
-    save();
     updateAll();
   });
 
@@ -749,52 +792,16 @@
   $("applyCfg").addEventListener("click", () => {
     MIN_OCC = clampInt($("minOccInput").value, 1, 999);
     SCOPE = ($("scopeSel").value === "any") ? "any" : "last";
-    save();
     updateAll();
   });
 
-  // Tabs
-  $("tabAnalise").addEventListener("click", () => setTab("analise"));
-  $("tabPadroes").addEventListener("click", () => setTab("padroes"));
-  $("tabRel").addEventListener("click", () => setTab("rel"));
-
-  // Editor config
-  $("buildMiniBtn").addEventListener("click", () => {
-    W = clampInt($("wInput").value, 1, 12);
-    enforceDifferent = ($("enforceDiff").value === "yes");
-    miniMask = Array(W*6).fill("");
-    save();
-    renderMiniGrid();
+  $("enableAllBtn").addEventListener("click", () => {
+    patterns = patterns.map(p => ({...p, enabled:true}));
+    updateAll();
   });
 
-  $("clearMiniBtn").addEventListener("click", () => {
-    miniMask = Array(W*6).fill("");
-    save();
-    renderMiniGrid();
-  });
-
-  $("enforceDiff").addEventListener("change", () => {
-    enforceDifferent = ($("enforceDiff").value === "yes");
-    save();
-  });
-
-  $("savePatBtn").addEventListener("click", () => {
-    const nome = String($("patName").value||"").trim();
-    if (!nome) { $("patPill").textContent = "Erro: nome vazio"; alert("Informe um nome."); return; }
-    if (!miniMask.some(x => x !== "")) { $("patPill").textContent = "Erro: padrão vazio"; alert("Marque ao menos 1 célula."); return; }
-
-    patterns.push({
-      id: uid(),
-      nome,
-      W,
-      mask: miniMask.slice(),
-      enforceDifferent
-    });
-
-    patterns = normalizePatterns(patterns);
-    $("patName").value = "";
-    $("patPill").textContent = "Salvo";
-    save();
+  $("disableAllBtn").addEventListener("click", () => {
+    patterns = patterns.map(p => ({...p, enabled:false}));
     updateAll();
   });
 
@@ -804,39 +811,38 @@
 
   $("importPatternsBtn").addEventListener("click", () => {
     const txt = String($("patternsJsonBox").value||"").trim();
-    if (!txt) { alert("Cole o JSON no campo."); return; }
-    try {
+    if (!txt){ alert("Cole o JSON no campo."); return; }
+    try{
       const parsed = JSON.parse(txt);
       if (!Array.isArray(parsed)) throw new Error("JSON precisa ser um array.");
       patterns = normalizePatterns(parsed);
       $("patternsJsonBox").value = "";
-      save();
       updateAll();
       alert("Padrões importados.");
-    } catch(e){
+    }catch(e){
       alert("Erro ao importar: " + (e && e.message ? e.message : "JSON inválido"));
     }
   });
 
   $("resetPatternsBtn").addEventListener("click", () => {
-    const ok = confirm("Resetar padrões (apagar banco) ?");
+    const ok = confirm("Resetar padrões para os pré-salvos?");
     if (!ok) return;
-    patterns = [];
-    save();
+    patterns = presets();
     updateAll();
   });
 
-  // ===== init =====
-  load();
+  // ===== Init =====
+  const had = load();
+  if (!had || !patterns.length){
+    patterns = presets();
+  }
+
   $("minOccInput").value = String(MIN_OCC);
   $("scopeSel").value = SCOPE;
-  $("wInput").value = String(W);
-  $("enforceDiff").value = enforceDifferent ? "yes" : "no";
-  miniMask = (miniMask && miniMask.length === W*6) ? miniMask : Array(W*6).fill("");
+  $("minOccShow").textContent = String(MIN_OCC);
 
-  updateAll();
-  renderMiniGrid();
   setTab("analise");
+  updateAll();
 })();
 </script>
 </body>
