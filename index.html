@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Caminho 6-em-6 + Padrões por Forma (A/V/E) — Educacional</title>
+  <title>Caminho 6×N + Padrões por Forma (A/V/E) — Educacional</title>
   <style>
     :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     body{margin:16px;background:#0b0f14;color:#e8eef6}
-    .wrap{max-width:1240px;margin:0 auto}
+    .wrap{max-width:1260px;margin:0 auto}
     .card{background:#111826;border:1px solid #1c2a3b;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.25)}
     h1{font-size:18px;margin:0 0 6px}
     h2{font-size:14px;margin:0 0 10px;color:#b9c7d9;font-weight:900}
-    .muted{color:#9fb0c6;font-size:12px}
+    .muted{color:#9fb0c6;font-size:12px;line-height:1.35}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .sep{height:1px;background:#1c2a3b;margin:12px 0}
     .pill{display:inline-block;padding:3px 8px;border-radius:999px;border:1px solid #2a3f58;background:#0f1725;font-size:12px;color:#cfe0f5}
@@ -30,7 +30,7 @@
     .hidden{display:none}
 
     .grid2{display:grid;grid-template-columns:1fr;gap:10px}
-    @media (min-width: 920px){.grid2{grid-template-columns:1.2fr .8fr}}
+    @media (min-width: 960px){.grid2{grid-template-columns:1.2fr .8fr}}
 
     .box{background:#0f1725;border:1px solid #1c2a3b;border-radius:12px;padding:10px}
     .warn{border-color:#ffd000!important;box-shadow:0 0 0 2px rgba(255,208,0,.12) inset}
@@ -41,15 +41,15 @@
     }
     input[type="number"]{width:120px}
     textarea{
-      width:100%;min-height:88px;resize:vertical;background:#0f1725;color:#e8eef6;border:1px solid #1c2a3b;border-radius:12px;
+      width:100%;min-height:92px;resize:vertical;background:#0f1725;color:#e8eef6;border:1px solid #1c2a3b;border-radius:12px;
       padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;font-size:12px
     }
 
-    /* CAMINHO 6-em-6 (preenche por COLUNA) */
+    /* CAMINHO (preenchimento coluna→linha) */
     .roadWrap{overflow:auto;border-radius:12px;border:1px solid #1c2a3b}
     .road{
       display:grid;
-      grid-auto-flow:column;              /* <- coluna por coluna */
+      grid-auto-flow:column;           /* coluna por coluna */
       grid-auto-columns:28px;
       grid-template-rows:repeat(6,28px);
       gap:4px;padding:12px;background:#0b1320;min-height:220px
@@ -62,19 +62,19 @@
     .V{background:#7a1111;border-color:#ff3b3b}
     .E{background:#6a5a12;border-color:#ffd000}
 
-    /* LISTA DE PADRÕES */
+    /* PADRÕES */
     .patList{display:grid;grid-template-columns:1fr;gap:10px}
     .patCard{border:1px solid #1c2a3b;background:#0b1320;border-radius:12px;padding:12px}
     .patTop{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
     .patName{font-weight:900}
     .patMeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-    /* PREVIEW DO PADRÃO (fiel ao caminho: coluna por coluna) */
-    .miniOuter{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;margin-top:10px}
+    /* Preview fiel ao caminho: coluna→linha */
+    .miniOuter{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-top:10px}
     .miniWrap{overflow:auto;border-radius:12px;border:1px solid #1c2a3b}
     .miniGrid{
       display:grid;
-      grid-auto-flow:column;              /* <- ESSA é a correção principal */
+      grid-auto-flow:column;           /* CORRETO */
       grid-template-rows:repeat(6,24px);
       grid-auto-columns:24px;
       gap:4px;
@@ -86,10 +86,9 @@
       display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#cfe0f5
     }
 
-    /* LEGENDAS DO PREVIEW */
     .miniLegend{display:grid;gap:6px}
     .legendRow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .k{display:inline-flex;align-items:center;justify-content:center;width:26px;height:20px;border-radius:999px;border:1px solid #2a3f58;background:#0f1725;font-size:11px;font-weight:900;color:#cfe0f5}
+    .k{display:inline-flex;align-items:center;justify-content:center;width:28px;height:20px;border-radius:999px;border:1px solid #2a3f58;background:#0f1725;font-size:11px;font-weight:900;color:#cfe0f5}
     .k1{border-color:#8ab4ff}
     .k2{border-color:#ff8a8a}
     .k3{border-color:#ffd000}
@@ -113,10 +112,10 @@
 <body>
 <div class="wrap">
   <div class="card">
-    <h1>Caminho 6-em-6 + Padrões por Forma (A/V/E) — Educacional</h1>
+    <h1>Caminho 6×N + Padrões por Forma (A/V/E) — Educacional</h1>
     <div class="muted">
-      Regra: a tabela é preenchida <b>de cima para baixo</b> e, ao completar 6 linhas, vai para a <b>próxima coluna</b>. Empate (E) entra como cor normal.
-      Detecção mostra <b>padrão detectado</b> e <b>estatística do histórico</b> (sem sugerir cor/resultado).
+      Regra do caminho: preenche <b>de cima para baixo</b> até 6 linhas; depois vai para a <b>próxima coluna</b>. Empate (E) entra como cor normal.
+      O sistema só mostra <b>detecção</b> e <b>probabilidades observadas no histórico</b> após o padrão (não faz promessa/previsão).
     </div>
     <div class="sep"></div>
     <div class="tabs">
@@ -164,7 +163,7 @@
       <div class="sep"></div>
 
       <div class="row">
-        <label class="muted">Mín. ocorrências p/ aparecer:</label>
+        <label class="muted">Mín. ocorrências p/ alertar:</label>
         <input type="number" id="minOccInput" min="1" max="999" value="2"/>
         <label class="muted">Detectar:</label>
         <select id="scopeSel">
@@ -192,9 +191,10 @@
   <!-- PADRÕES -->
   <div id="viewPadroes" class="hidden">
     <div class="card">
-      <h2>Padrões pré-salvos (preview fiel ao preenchimento por coluna)</h2>
+      <h2>Padrões pré-salvos (das imagens enviadas)</h2>
       <div class="muted">
         Legenda: <span class="pill">1/2/3</span> = grupos (mesmo número = mesma cor). <span class="pill">A/V/E</span> = cor fixa.
+        Preview preenche <b>coluna→linha</b>, igual ao caminho.
       </div>
       <div class="sep"></div>
 
@@ -217,23 +217,23 @@
     <div class="card">
       <h2>Acompanhamento</h2>
       <div class="muted">
-        “Depois” = primeiro item após o fim da janela (índice = (startCol+W)*6). Tabela mostra ocorrências e distribuição A/V/E após o padrão.
+        “Depois” = primeiro item após o fim da janela (índice = (startCol+W)*6). Mostra contagens e probabilidades observadas.
       </div>
       <div class="sep"></div>
 
       <div style="max-height:560px;overflow:auto;border-radius:12px;border:1px solid #1c2a3b;">
         <table>
           <thead>
-            <tr>
-              <th>Padrão</th>
-              <th>W</th>
-              <th class="right">Ocorrências</th>
-              <th class="right">Depois A</th>
-              <th class="right">Depois V</th>
-              <th class="right">Depois E</th>
-              <th class="right">Mais comum</th>
-              <th class="right">Última posição</th>
-            </tr>
+          <tr>
+            <th>Padrão</th>
+            <th>W</th>
+            <th class="right">Ocorrências</th>
+            <th class="right">Depois A</th>
+            <th class="right">Depois V</th>
+            <th class="right">Depois E</th>
+            <th class="right">Prob. (A/V/E)</th>
+            <th class="right">Última posição</th>
+          </tr>
           </thead>
           <tbody id="acompBody"></tbody>
         </table>
@@ -247,15 +247,15 @@
 
 <script>
 (() => {
-  const KEY = "CAMINHO_6_EM_6_PRESETS_V3";
+  const KEY = "CAMINHO_6xN_PADROES_IMG_v1";
   const CORES = ["A","V","E"];
 
   let MIN_OCC = 2;
-  let SCOPE = "last"; // last | any
+  let SCOPE = "any"; // any | last
 
   let seq = [];
-  let patterns = []; // {id,nome,W,mask,enforceDifferent,enabled}
-  let stats = {};    // id -> {occ, nextCounts{A,V,E}, lastPos, lastStart}
+  let patterns = [];
+  let stats = {}; // id -> {occ, nextCounts{A,V,E}, lastPos}
 
   const $ = (id) => document.getElementById(id);
   const clampInt = (n,a,b) => { n=Math.floor(Number(n)); if(!Number.isFinite(n)) return a; return Math.max(a,Math.min(b,n)); };
@@ -312,7 +312,7 @@
     }catch{ return false; }
   }
 
-  // ===== caminho 6-em-6: col=floor(i/6), row=i%6 =====
+  // ===== Caminho 6×N: col=floor(i/6), row=i%6 =====
   function getCellColor(col,row){
     const idx = col*6 + row;
     if (idx < 0 || idx >= seq.length) return null;
@@ -350,7 +350,8 @@
     }
   }
 
-  // ===== matching por máscara (orientação por coluna) =====
+  // ===== Matching (máscara) =====
+  // mask: "" ignore | A/V/E fixo | 1/2/3 grupos (mesmo número = mesma cor)
   function matchPatternAt(pat, startCol){
     const Wp = pat.W;
     const groups = {};
@@ -387,26 +388,28 @@
   }
 
   function nextAfterWindow(startCol, Wp){
-    const idx = (startCol + Wp) * 6;
+    const idx = (startCol + Wp) * 6; // primeiro item após a janela (coluna seguinte)
     if (idx >= 0 && idx < seq.length) return seq[idx];
     return null;
   }
 
-  function mostCommonNext(nextCounts){
-    let best = "—", bestV = -1;
-    for (const c of CORES){
-      const v = nextCounts[c] || 0;
-      if (v > bestV){ bestV=v; best=c; }
-    }
-    return bestV <= 0 ? "—" : best;
+  function formatDist(nextCounts){
+    const a = nextCounts.A || 0;
+    const v = nextCounts.V || 0;
+    const e = nextCounts.E || 0;
+    const total = a+v+e;
+    if (!total) return "sem dados";
+    const pa = Math.round((a/total)*100);
+    const pv = Math.round((v/total)*100);
+    const pe = Math.round((e/total)*100);
+    return `P(A)=${pa}% | P(V)=${pv}% | P(E)=${pe}% (n=${total})`;
   }
 
   function rebuildStats(){
     stats = {};
     for (const p of patterns){
-      stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}, lastPos:"—", lastStart:null};
+      stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}, lastPos:"—"};
     }
-
     const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
     if (maxCol < 0) return;
 
@@ -421,7 +424,6 @@
         const st = stats[p.id];
         st.occ += 1;
         st.lastPos = `coluna ${start+1}`;
-        st.lastStart = start;
 
         const nxt = nextAfterWindow(start, Wp);
         if (nxt) st.nextCounts[nxt] = (st.nextCounts[nxt]||0) + 1;
@@ -479,22 +481,20 @@
 
     alertBox.style.display = "block";
     const top = hits[0];
-    const mc = mostCommonNext(top.st.nextCounts);
 
     $("alertTitle").textContent = top.p.nome;
     $("alertMsg").textContent =
       `Detectado na janela iniciando em startCol=${top.start} (coluna ${top.start+1}). ` +
       `Ocorrências no histórico: ${top.st.occ}. ` +
-      `Depois (mais comum no seu histórico): ${mc}.`;
+      `Distribuição observada depois do padrão: ${formatDist(top.st.nextCounts)}.`;
 
     const rank = $("rankBox");
     rank.innerHTML = "";
     hits.slice(0,5).forEach((h, i) => {
-      const mc2 = mostCommonNext(h.st.nextCounts);
       const div = document.createElement("div");
       div.style.marginTop = "8px";
       div.className = "pill";
-      div.innerHTML = `${i+1}. <span class="mono">${escapeHtml(h.p.nome)}</span> | W=${h.p.W} | occ=${h.st.occ} | depois≈${mc2}`;
+      div.innerHTML = `${i+1}. <span class="mono">${escapeHtml(h.p.nome)}</span> | W=${h.p.W} | occ=${h.st.occ} | ${formatDist(h.st.nextCounts)}`;
       rank.appendChild(div);
     });
 
@@ -514,7 +514,6 @@
 
   function renderMiniHTML(p){
     const html = [];
-    // IMPORTANTÍSSIMO: mesma ordem do caminho: dx (coluna) -> row (linha)
     for (let dx=0; dx<p.W; dx++){
       for (let row=0; row<6; row++){
         const val = p.mask[dx*6 + row] || "";
@@ -531,32 +530,24 @@
 
     for (const p of patterns){
       const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0}};
-      const mc = mostCommonNext(st.nextCounts);
-
       const card = document.createElement("div");
       card.className = "patCard";
-
       card.innerHTML = `
         <div class="patTop">
           <div>
             <div class="patName">${escapeHtml(p.nome)}</div>
-            <div class="muted">W=${p.W} | ${p.enforceDifferent ? "grupos diferentes" : "grupos livres"} | orientação: coluna→linha</div>
+            <div class="muted">W=${p.W} | ${p.enforceDifferent ? "grupos diferentes" : "grupos livres"} | preview: coluna→linha</div>
           </div>
           <div class="patMeta">
-            <label class="pill">
-              <input type="checkbox" data-toggle="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""} />
-              ativo
-            </label>
+            <label class="pill"><input type="checkbox" data-toggle="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""}/> ativo</label>
             <span class="pill">occ: ${p.enabled ? (st.occ||0) : "—"}</span>
-            <span class="pill">depois≈ ${p.enabled ? mc : "—"}</span>
+            <span class="pill">${p.enabled ? formatDist(st.nextCounts) : "—"}</span>
           </div>
         </div>
 
         <div class="miniOuter">
           <div class="miniWrap">
-            <div class="miniGrid" style="grid-auto-columns:24px">
-              ${renderMiniHTML(p)}
-            </div>
+            <div class="miniGrid">${renderMiniHTML(p)}</div>
           </div>
           <div class="miniLegend">
             <div class="muted">Legenda</div>
@@ -569,9 +560,6 @@
               <span class="k kA">A</span><span class="muted">Azul fixo</span>
               <span class="k kV">V</span><span class="muted">Vermelho fixo</span>
               <span class="k kE">E</span><span class="muted">Empate fixo</span>
-            </div>
-            <div class="muted" style="max-width:260px">
-              A coluna 1 do preview é preenchida de cima para baixo, depois vai para a coluna 2, igual ao caminho.
             </div>
           </div>
         </div>
@@ -591,8 +579,6 @@
 
     for (const p of patterns){
       const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0},lastPos:"—"};
-      const mc = mostCommonNext(st.nextCounts);
-
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(p.nome)} ${p.enabled ? "" : "<span class='pill'>desativado</span>"}</td>
@@ -601,13 +587,13 @@
         <td class="right">${p.enabled ? (st.nextCounts.A||0) : "—"}</td>
         <td class="right">${p.enabled ? (st.nextCounts.V||0) : "—"}</td>
         <td class="right">${p.enabled ? (st.nextCounts.E||0) : "—"}</td>
-        <td class="right">${p.enabled ? mc : "—"}</td>
+        <td class="right">${p.enabled ? formatDist(st.nextCounts) : "—"}</td>
         <td class="right">${p.enabled ? st.lastPos : "—"}</td>
       `;
       body.appendChild(tr);
 
       if (p.enabled && st.occ > 0){
-        lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0} | mais comum=${mc}`);
+        lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0} | ${formatDist(st.nextCounts)}`);
       }
     }
 
@@ -626,87 +612,95 @@
     save();
   }
 
-  // ===== presets =====
-  // -[inferência] formas aproximadas (W×6) alinhadas à orientação coluna→linha.
+  // ===== Presets (das imagens) =====
+  // -[inferência] Estes padrões foram convertidos das imagens para a grade W×6 (coluna→linha).
   function presets(){
     const out = [];
     const empty = (W) => Array(W*6).fill("");
     const set = (mask, dx, row, val) => { mask[dx*6 + row] = val; };
 
-    // 2x1 (L pequeno): coluna 1 tem 2 do grupo 1; topo da coluna 2 tem grupo 2
+    // ---- PADRÕES 2x1 / 2x2 / Escadinhas (imagem "PADRÕES")
     {
       const W = 2; const m = empty(W);
-      set(m,0,0,"1"); set(m,0,1,"1");
-      set(m,1,0,"2");
+      set(m,0,0,"1"); set(m,1,0,"1");
+      set(m,0,2,"2");
       out.push({id:uid(), nome:"Padrão 2×1 (L pequeno)", W, mask:m, enforceDifferent:true, enabled:true});
     }
-
-    // 2x2 bloco: (col1 topo 2 células = 1) e (col2 topo 2 células = 2)
     {
       const W = 2; const m = empty(W);
-      set(m,0,0,"1"); set(m,0,1,"1");
-      set(m,1,0,"2"); set(m,1,1,"2");
+      set(m,0,0,"1"); set(m,1,0,"1");
+      set(m,0,2,"2"); set(m,1,2,"2");
       out.push({id:uid(), nome:"Padrão 2×2 (bloco)", W, mask:m, enforceDifferent:true, enabled:true});
     }
-
-    // Escadinha (aprox.)
     {
       const W = 3; const m = empty(W);
       set(m,0,0,"1");
-      set(m,1,0,"2"); set(m,1,1,"2");
-      set(m,2,0,"1"); set(m,2,1,"1"); set(m,2,2,"1");
+      set(m,0,2,"2"); set(m,1,2,"2");
+      set(m,0,4,"1"); set(m,1,4,"1"); set(m,2,4,"1");
       out.push({id:uid(), nome:"Padrão Escadinha", W, mask:m, enforceDifferent:true, enabled:true});
     }
-
-    // Escadinha invertida (aprox.)
     {
       const W = 3; const m = empty(W);
-      set(m,0,0,"1"); set(m,0,1,"1"); set(m,0,2,"1");
-      set(m,1,0,"2"); set(m,1,1,"2");
-      set(m,2,0,"1");
+      set(m,0,0,"1"); set(m,1,0,"1"); set(m,2,0,"1");
+      set(m,0,2,"2"); set(m,1,2,"2");
+      set(m,0,4,"1");
       out.push({id:uid(), nome:"Padrão Escadinha Invertida", W, mask:m, enforceDifferent:true, enabled:true});
     }
 
-    // Alternância (aprox.)
+    // ---- Alternância / Alternância 2 / Quebra 2ª linha (imagem superior)
     {
-      const W = 2; const m = empty(W);
-      set(m,0,0,"1"); set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1");
-      set(m,1,0,"2");
-      out.push({id:uid(), nome:"Padrão de Alternância (aprox.)", W, mask:m, enforceDifferent:true, enabled:true});
+      const W = 3; const m = empty(W);
+      set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1");
+      set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1"); set(m,0,4,"1");
+      out.push({id:uid(), nome:"Padrão de Alternância", W, mask:m, enforceDifferent:true, enabled:true});
     }
-
-    // Alternância 2 (topo alternado em 6 colunas)
     {
       const W = 6; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1"); set(m,3,0,"2"); set(m,4,0,"1"); set(m,5,0,"2");
-      out.push({id:uid(), nome:"Padrão de Alternância 2 (topo alternado)", W, mask:m, enforceDifferent:true, enabled:true});
+      set(m,0,1,"1");
+      set(m,2,1,"1");
+      out.push({id:uid(), nome:"Padrão de Alternância 2", W, mask:m, enforceDifferent:true, enabled:true});
+    }
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1");
+      set(m,1,1,"2");
+      set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1"); set(m,0,4,"1");
+      out.push({id:uid(), nome:"Quebra da 2ª linha após o surf", W, mask:m, enforceDifferent:true, enabled:true});
     }
 
-    // Empate consecutivo (vertical)
+    // ---- EMPATES (imagem "PADRÕES DE EMPATE")
     {
       const W = 1; const m = empty(W);
       set(m,0,0,"E"); set(m,0,1,"E");
-      out.push({id:uid(), nome:"Empate consecutivo (vertical)", W, mask:m, enforceDifferent:false, enabled:true});
+      out.push({id:uid(), nome:"Empate consecutivo", W, mask:m, enforceDifferent:false, enabled:true});
     }
-
-    // Empate horizontal (2)
     {
       const W = 2; const m = empty(W);
       set(m,0,0,"E"); set(m,1,0,"E");
       out.push({id:uid(), nome:"Empate na horizontal (2)", W, mask:m, enforceDifferent:false, enabled:true});
     }
-
-    // Empate alternado (E ? E no topo, com ? como grupo 1)
+    {
+      const W = 1; const m = empty(W);
+      set(m,0,0,"E"); set(m,0,1,"A"); set(m,0,2,"E");
+      out.push({id:uid(), nome:"Empate alternado (vertical) (E-A-E)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
     {
       const W = 3; const m = empty(W);
-      set(m,0,0,"E"); set(m,1,0,"1"); set(m,2,0,"E");
-      out.push({id:uid(), nome:"Empate alternado na horizontal (E-?-E)", W, mask:m, enforceDifferent:false, enabled:true});
+      set(m,0,0,"E"); set(m,1,0,"V"); set(m,2,0,"E");
+      out.push({id:uid(), nome:"Alternado na horizontal (E-V-E)", W, mask:m, enforceDifferent:false, enabled:true});
+    }
+    {
+      const W = 3; const m = empty(W);
+      set(m,0,0,"E"); set(m,1,0,"V"); set(m,2,0,"E");
+      set(m,0,1,"A"); set(m,1,1,"E"); set(m,2,1,"V");
+      out.push({id:uid(), nome:"Empate na horizontal (2×3)", W, mask:m, enforceDifferent:false, enabled:true});
     }
 
     return out;
   }
 
-  // ===== tabs =====
+  // ===== Tabs =====
   function setTab(which){
     ["tabAnalise","tabPadroes","tabAcomp"].forEach(id => $(id).classList.remove("active"));
     ["viewAnalise","viewPadroes","viewAcomp"].forEach(id => $(id).classList.add("hidden"));
@@ -715,7 +709,7 @@
     if (which==="acomp"){ $("tabAcomp").classList.add("active"); $("viewAcomp").classList.remove("hidden"); }
   }
 
-  // ===== import/export seq =====
+  // ===== Parse/import seq =====
   function parseSeq(text){
     const raw = String(text||"").toUpperCase().replace(/[^AVE,\s]/g, " ");
     const tokens = raw.split(/[\s,]+/).map(t => t.trim()).filter(Boolean);
@@ -761,7 +755,7 @@
 
   $("applyCfg").addEventListener("click", () => {
     MIN_OCC = clampInt($("minOccInput").value, 1, 999);
-    SCOPE = ($("scopeSel").value === "any") ? "any" : "last";
+    SCOPE = ($("scopeSel").value === "last") ? "last" : "any";
     updateAll();
   });
 
@@ -786,13 +780,13 @@
   });
 
   $("resetPatternsBtn").addEventListener("click", () => {
-    if(confirm("Resetar padrões para os pré-salvos?")){
+    if(confirm("Resetar padrões para os pré-salvos (das imagens)?")){
       patterns = presets();
       updateAll();
     }
   });
 
-  // Delegação única (evita “duplicação de listener”)
+  // Delegação única
   $("patternsList").addEventListener("change", (ev) => {
     const cb = ev.target;
     if (!cb || cb.tagName !== "INPUT") return;
@@ -804,34 +798,17 @@
     updateAll();
   });
 
-  // ===== init =====
+  // ===== Init =====
   const had = load();
-  if (!had || !patterns.length){ patterns = presets(); }
-
+  if (!had || !patterns.length){
+    patterns = presets();
+  }
   $("minOccInput").value = String(MIN_OCC);
   $("scopeSel").value = SCOPE;
   $("minOccShow").textContent = String(MIN_OCC);
 
   setTab("analise");
   updateAll();
-
-  // load/save helpers
-  function load(){
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return false;
-    try{
-      const data = JSON.parse(raw);
-      if (typeof data.MIN_OCC === "number") MIN_OCC = Math.max(1, Math.floor(data.MIN_OCC));
-      if (data.SCOPE === "any" || data.SCOPE === "last") SCOPE = data.SCOPE;
-      if (Array.isArray(data.seq)) seq = data.seq.filter(x => CORES.includes(x));
-      if (Array.isArray(data.patterns)) patterns = normalizePatterns(data.patterns);
-      return true;
-    }catch{ return false; }
-  }
-  function save(){
-    localStorage.setItem(KEY, JSON.stringify({MIN_OCC,SCOPE,seq,patterns}));
-    $("pillSave").textContent = "Dados locais: ok";
-  }
 })();
 </script>
 </body>
