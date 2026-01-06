@@ -15,6 +15,9 @@
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .sep{height:1px;background:#1c2a3b;margin:12px 0}
     .pill{display:inline-block;padding:3px 8px;border-radius:999px;border:1px solid #2a3f58;background:#0f1725;font-size:12px;color:#cfe0f5}
+    .pillWarn{border-color:#ffd000}
+    .pillBad{border-color:#ff3b3b}
+    .pillOk{border-color:#2bd46a}
     button{border:1px solid #2a3f58;background:#162235;color:#e8eef6;padding:12px 14px;border-radius:12px;font-weight:900;cursor:pointer}
     button:hover{filter:brightness(1.08)}
     .smallbtn{padding:10px 12px}
@@ -74,7 +77,7 @@
     .miniWrap{overflow:auto;border-radius:12px;border:1px solid #1c2a3b}
     .miniGrid{
       display:grid;
-      grid-auto-flow:column;           /* CORRETO */
+      grid-auto-flow:column;
       grid-template-rows:repeat(6,24px);
       grid-auto-columns:24px;
       gap:4px;
@@ -115,7 +118,7 @@
     <h1>Caminho 6×N + Padrões por Forma (A/V/E) — Educacional</h1>
     <div class="muted">
       Regra do caminho: preenche <b>de cima para baixo</b> até 6 linhas; depois vai para a <b>próxima coluna</b>. Empate (E) entra como cor normal.
-      O sistema só mostra <b>detecção</b> e <b>probabilidades observadas no histórico</b> após o padrão (não faz promessa/previsão).
+      O sistema só mostra <b>detecção</b> e <b>probabilidades observadas</b> após o padrão (não promete resultado).
     </div>
     <div class="sep"></div>
     <div class="tabs">
@@ -154,6 +157,11 @@
           <div class="muted">Padrões detectados (educacional)</div>
           <div style="font-weight:900;font-size:16px;" id="alertTitle">—</div>
           <div class="muted" id="alertMsg">—</div>
+          <div class="row" style="margin-top:10px;">
+            <span class="pill" id="badgeOcc">occ: —</span>
+            <span class="pill" id="badgeN">n: —</span>
+            <span class="pill" id="badgeSample">amostra: —</span>
+          </div>
           <div class="sep"></div>
           <div class="muted">Top 5 (mín. ocorrências: <b><span id="minOccShow">2</span></b>)</div>
           <div id="rankBox"></div>
@@ -217,7 +225,7 @@
     <div class="card">
       <h2>Acompanhamento</h2>
       <div class="muted">
-        “Depois” = primeiro item após o fim da janela (índice = (startCol+W)*6). Mostra contagens e probabilidades observadas.
+        “occ” = total de ocorrências do padrão no caminho. “n” = quantas ocorrências tinham “depois” disponível (base da probabilidade).
       </div>
       <div class="sep"></div>
 
@@ -227,7 +235,8 @@
           <tr>
             <th>Padrão</th>
             <th>W</th>
-            <th class="right">Ocorrências</th>
+            <th class="right">occ</th>
+            <th class="right">n</th>
             <th class="right">Depois A</th>
             <th class="right">Depois V</th>
             <th class="right">Depois E</th>
@@ -247,15 +256,16 @@
 
 <script>
 (() => {
-  const KEY = "CAMINHO_6xN_PADROES_IMG_v1";
+  const KEY = "CAMINHO_6xN_PADROES_IMG_v2";
   const CORES = ["A","V","E"];
+  const SAMPLE_WARN_N = 5;  // melhoria: alerta visual quando n < 5
 
   let MIN_OCC = 2;
   let SCOPE = "any"; // any | last
 
   let seq = [];
   let patterns = [];
-  let stats = {}; // id -> {occ, nextCounts{A,V,E}, lastPos}
+  let stats = {}; // id -> {occ, occWithNext, nextCounts{A,V,E}, lastPos}
 
   const $ = (id) => document.getElementById(id);
   const clampInt = (n,a,b) => { n=Math.floor(Number(n)); if(!Number.isFinite(n)) return a; return Math.max(a,Math.min(b,n)); };
@@ -393,23 +403,34 @@
     return null;
   }
 
-  function formatDist(nextCounts){
-    const a = nextCounts.A || 0;
-    const v = nextCounts.V || 0;
-    const e = nextCounts.E || 0;
-    const total = a+v+e;
-    if (!total) return "sem dados";
-    const pa = Math.round((a/total)*100);
-    const pv = Math.round((v/total)*100);
-    const pe = Math.round((e/total)*100);
-    return `P(A)=${pa}% | P(V)=${pv}% | P(E)=${pe}% (n=${total})`;
+  // ===== Probabilidades =====
+  function formatDist(nextCounts, n){
+    const nn = n || 0;
+    if (!nn) return "sem dados";
+    const pa = Math.round(((nextCounts.A||0)/nn)*100);
+    const pv = Math.round(((nextCounts.V||0)/nn)*100);
+    const pe = Math.round(((nextCounts.E||0)/nn)*100);
+    return `P(A)=${pa}% | P(V)=${pv}% | P(E)=${pe}% (n=${nn})`;
   }
 
+  function sampleBadge(n){
+    if (!n) return {txt:"sem dados", cls:"pillBad"};
+    if (n < SAMPLE_WARN_N) return {txt:`amostra pequena (n<${SAMPLE_WARN_N})`, cls:"pillWarn"};
+    return {txt:"amostra ok", cls:"pillOk"};
+  }
+
+  // ===== Stats (corrigido: occ vs n/occWithNext) =====
   function rebuildStats(){
     stats = {};
     for (const p of patterns){
-      stats[p.id] = {occ:0, nextCounts:{A:0,V:0,E:0}, lastPos:"—"};
+      stats[p.id] = {
+        occ: 0,
+        occWithNext: 0,
+        nextCounts: {A:0,V:0,E:0},
+        lastPos: "—"
+      };
     }
+
     const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
     if (maxCol < 0) return;
 
@@ -426,39 +447,51 @@
         st.lastPos = `coluna ${start+1}`;
 
         const nxt = nextAfterWindow(start, Wp);
-        if (nxt) st.nextCounts[nxt] = (st.nextCounts[nxt]||0) + 1;
+        if (nxt){
+          st.occWithNext += 1;
+          st.nextCounts[nxt] = (st.nextCounts[nxt]||0) + 1;
+        }
       }
     }
   }
 
+  // ===== Active matches (corrigido: sem duplicar no Top 5) =====
   function activeMatches(){
-    const hits = [];
     const maxCol = seq.length ? Math.floor((seq.length-1)/6) : -1;
-    if (maxCol < 0) return hits;
+    if (maxCol < 0) return [];
+
+    const byId = new Map(); // id -> {p, st, startBest}
 
     for (const p of patterns){
       if (!p.enabled) continue;
       const Wp = p.W;
+      const st = stats[p.id];
+      if (!st || st.occ < MIN_OCC) continue;
 
       if (SCOPE === "last"){
         const start = maxCol - Wp + 1;
         if (start < 0) continue;
         if (matchPatternAt(p, start)){
-          const st = stats[p.id];
-          if (st.occ >= MIN_OCC) hits.push({p, st, start});
+          byId.set(p.id, {p, st, startBest: start});
         }
-      } else {
-        for (let start=0; start<=maxCol; start++){
-          if (start + Wp - 1 > maxCol) break;
-          if (matchPatternAt(p, start)){
-            const st = stats[p.id];
-            if (st.occ >= MIN_OCC) hits.push({p, st, start});
-          }
+        continue;
+      }
+
+      // SCOPE === "any": pega a ocorrência MAIS RECENTE (start maior)
+      let best = null;
+      for (let start=0; start<=maxCol; start++){
+        if (start + Wp - 1 > maxCol) break;
+        if (matchPatternAt(p, start)){
+          if (best === null || start > best) best = start;
         }
+      }
+      if (best !== null){
+        byId.set(p.id, {p, st, startBest: best});
       }
     }
 
-    hits.sort((a,b) => (b.st.occ - a.st.occ));
+    const hits = Array.from(byId.values());
+    hits.sort((a,b) => (b.st.occ - a.st.occ) || (b.startBest - a.startBest));
     return hits;
   }
 
@@ -483,18 +516,35 @@
     const top = hits[0];
 
     $("alertTitle").textContent = top.p.nome;
+
+    const n = top.st.occWithNext || 0;
+    const dist = formatDist(top.st.nextCounts, n);
+
     $("alertMsg").textContent =
-      `Detectado na janela iniciando em startCol=${top.start} (coluna ${top.start+1}). ` +
-      `Ocorrências no histórico: ${top.st.occ}. ` +
-      `Distribuição observada depois do padrão: ${formatDist(top.st.nextCounts)}.`;
+      `Detectado na janela iniciando em startCol=${top.startBest} (coluna ${top.startBest+1}). ` +
+      `Ocorrências no histórico (occ): ${top.st.occ}. ` +
+      `Base da probabilidade (n): ${n}. ` +
+      `Distribuição observada depois do padrão: ${dist}.`;
+
+    $("badgeOcc").textContent = `occ: ${top.st.occ}`;
+    $("badgeN").textContent = `n: ${n}`;
+    const sb = sampleBadge(n);
+    $("badgeSample").className = `pill ${sb.cls}`;
+    $("badgeSample").textContent = sb.txt;
 
     const rank = $("rankBox");
     rank.innerHTML = "";
     hits.slice(0,5).forEach((h, i) => {
+      const nn = h.st.occWithNext || 0;
       const div = document.createElement("div");
       div.style.marginTop = "8px";
       div.className = "pill";
-      div.innerHTML = `${i+1}. <span class="mono">${escapeHtml(h.p.nome)}</span> | W=${h.p.W} | occ=${h.st.occ} | ${formatDist(h.st.nextCounts)}`;
+      div.innerHTML =
+        `${i+1}. <span class="mono">${escapeHtml(h.p.nome)}</span>` +
+        ` | W=${h.p.W}` +
+        ` | occ=${h.st.occ}` +
+        ` | n=${nn}` +
+        ` | ${escapeHtml(formatDist(h.st.nextCounts, nn))}`;
       rank.appendChild(div);
     });
 
@@ -529,7 +579,10 @@
     list.innerHTML = "";
 
     for (const p of patterns){
-      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0}};
+      const st = stats[p.id] || {occ:0,occWithNext:0,nextCounts:{A:0,V:0,E:0}};
+      const nn = st.occWithNext || 0;
+      const badge = sampleBadge(nn);
+
       const card = document.createElement("div");
       card.className = "patCard";
       card.innerHTML = `
@@ -541,7 +594,9 @@
           <div class="patMeta">
             <label class="pill"><input type="checkbox" data-toggle="${escapeHtml(p.id)}" ${p.enabled ? "checked" : ""}/> ativo</label>
             <span class="pill">occ: ${p.enabled ? (st.occ||0) : "—"}</span>
-            <span class="pill">${p.enabled ? formatDist(st.nextCounts) : "—"}</span>
+            <span class="pill">n: ${p.enabled ? nn : "—"}</span>
+            <span class="pill ${badge.cls}">${p.enabled ? badge.txt : "—"}</span>
+            <span class="pill">${p.enabled ? escapeHtml(formatDist(st.nextCounts, nn)) : "—"}</span>
           </div>
         </div>
 
@@ -575,25 +630,28 @@
     const lines = [];
     lines.push(`MIN_OCC=${MIN_OCC} | SCOPE=${SCOPE} | Total resultados=${seq.length} | Padrões ativos=${patterns.filter(p=>p.enabled).length}`);
     lines.push(`Regra: coluna (6 linhas) preenchida de cima para baixo; depois próxima coluna.`);
+    lines.push(`Nota: occ = total de matches; n = matches com "depois" disponível.`);
     lines.push(`--------------------------------------------------`);
 
     for (const p of patterns){
-      const st = stats[p.id] || {occ:0,nextCounts:{A:0,V:0,E:0},lastPos:"—"};
+      const st = stats[p.id] || {occ:0,occWithNext:0,nextCounts:{A:0,V:0,E:0},lastPos:"—"};
+      const nn = st.occWithNext || 0;
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(p.nome)} ${p.enabled ? "" : "<span class='pill'>desativado</span>"}</td>
         <td>${p.W}</td>
         <td class="right">${p.enabled ? st.occ : "—"}</td>
+        <td class="right">${p.enabled ? nn : "—"}</td>
         <td class="right">${p.enabled ? (st.nextCounts.A||0) : "—"}</td>
         <td class="right">${p.enabled ? (st.nextCounts.V||0) : "—"}</td>
         <td class="right">${p.enabled ? (st.nextCounts.E||0) : "—"}</td>
-        <td class="right">${p.enabled ? formatDist(st.nextCounts) : "—"}</td>
+        <td class="right">${p.enabled ? escapeHtml(formatDist(st.nextCounts, nn)) : "—"}</td>
         <td class="right">${p.enabled ? st.lastPos : "—"}</td>
       `;
       body.appendChild(tr);
 
       if (p.enabled && st.occ > 0){
-        lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0} | ${formatDist(st.nextCounts)}`);
+        lines.push(`• ${p.nome} | W=${p.W} | occ=${st.occ} | n=${nn} | depois: A=${st.nextCounts.A||0}, V=${st.nextCounts.V||0}, E=${st.nextCounts.E||0} | ${formatDist(st.nextCounts, nn)}`);
       }
     }
 
@@ -613,25 +671,27 @@
   }
 
   // ===== Presets (das imagens) =====
-  // -[inferência] Estes padrões foram convertidos das imagens para a grade W×6 (coluna→linha).
+  // [não verificado] Isto foi convertido das imagens que você enviou para a grade W×6 (coluna→linha).
   function presets(){
     const out = [];
     const empty = (W) => Array(W*6).fill("");
     const set = (mask, dx, row, val) => { mask[dx*6 + row] = val; };
 
-    // ---- PADRÕES 2x1 / 2x2 / Escadinhas (imagem "PADRÕES")
+    // ---- 2×1 (L pequeno)
     {
       const W = 2; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"1");
       set(m,0,2,"2");
       out.push({id:uid(), nome:"Padrão 2×1 (L pequeno)", W, mask:m, enforceDifferent:true, enabled:true});
     }
+    // ---- 2×2 (bloco)
     {
       const W = 2; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"1");
       set(m,0,2,"2"); set(m,1,2,"2");
       out.push({id:uid(), nome:"Padrão 2×2 (bloco)", W, mask:m, enforceDifferent:true, enabled:true});
     }
+    // ---- Escadinha
     {
       const W = 3; const m = empty(W);
       set(m,0,0,"1");
@@ -639,6 +699,7 @@
       set(m,0,4,"1"); set(m,1,4,"1"); set(m,2,4,"1");
       out.push({id:uid(), nome:"Padrão Escadinha", W, mask:m, enforceDifferent:true, enabled:true});
     }
+    // ---- Escadinha Invertida
     {
       const W = 3; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"1"); set(m,2,0,"1");
@@ -647,13 +708,15 @@
       out.push({id:uid(), nome:"Padrão Escadinha Invertida", W, mask:m, enforceDifferent:true, enabled:true});
     }
 
-    // ---- Alternância / Alternância 2 / Quebra 2ª linha (imagem superior)
+    // ---- Padrão de Alternância
     {
       const W = 3; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1");
       set(m,0,1,"1"); set(m,0,2,"1"); set(m,0,3,"1"); set(m,0,4,"1");
       out.push({id:uid(), nome:"Padrão de Alternância", W, mask:m, enforceDifferent:true, enabled:true});
     }
+
+    // ---- Padrão de Alternância 2
     {
       const W = 6; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1"); set(m,3,0,"2"); set(m,4,0,"1"); set(m,5,0,"2");
@@ -661,6 +724,8 @@
       set(m,2,1,"1");
       out.push({id:uid(), nome:"Padrão de Alternância 2", W, mask:m, enforceDifferent:true, enabled:true});
     }
+
+    // ---- Quebra da 2ª linha após o surf
     {
       const W = 3; const m = empty(W);
       set(m,0,0,"1"); set(m,1,0,"2"); set(m,2,0,"1");
@@ -669,7 +734,7 @@
       out.push({id:uid(), nome:"Quebra da 2ª linha após o surf", W, mask:m, enforceDifferent:true, enabled:true});
     }
 
-    // ---- EMPATES (imagem "PADRÕES DE EMPATE")
+    // ---- EMPATES
     {
       const W = 1; const m = empty(W);
       set(m,0,0,"E"); set(m,0,1,"E");
